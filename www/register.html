@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider Registration (Mobile OTP)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #4f46e5; }
+        body { font-family: 'Inter', sans-serif; }
+        #toast {
+            position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999;
+            transform: translateX(120%); opacity: 0; transition: all 0.5s ease;
+        }
+        #toast.show { transform: translateX(0); opacity: 1; }
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+
+        /* Mobile specific adjustments (already handled well by Tailwind, but ensures padding) */
+        @media (max-width: 640px) {
+            .container-card {
+                margin: 1rem;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-0">
+
+    <div id="toast" class="max-w-xs p-4 rounded-xl shadow-xl text-white">Toast message</div>
+
+    <div class="w-full max-w-md p-6 sm:p-8 space-y-6 bg-white rounded-2xl shadow-2xl container-card">
+        <h2 class="text-3xl font-extrabold text-center text-gray-900">Rider Sign Up</h2>
+        
+        <!-- Progress Indicator -->
+        <div class="flex justify-between items-center text-sm font-medium text-gray-500 mb-6">
+            <span id="step1-indicator" class="flex flex-col items-center p-2 rounded-full bg-indigo-600 text-white transition duration-300 transform scale-105">1. Mobile</span>
+            <div class="flex-grow h-0.5 bg-gray-300 mx-2"></div>
+            <span id="step2-indicator" class="flex flex-col items-center p-2 rounded-full bg-gray-300 text-gray-600 transition duration-300">2. OTP</span>
+            <div class="flex-grow h-0.5 bg-gray-300 mx-2"></div>
+            <span id="step3-indicator" class="flex flex-col items-center p-2 rounded-full bg-gray-300 text-gray-600 transition duration-300">3. Details</span>
+        </div>
+
+        <form id="riderForm" class="space-y-6">
+            <input type="hidden" id="mobileNumber" name="mobile" value="">
+
+            <!-- Step 1: Mobile Input -->
+            <div id="step1" class="form-step active space-y-4">
+                <p class="text-sm text-center text-gray-500">Enter your mobile number to begin registration.</p>
+                <div>
+                    <label for="mobile1" class="text-sm font-medium text-gray-700">Mobile Number</label>
+                    <input id="mobile1" name="mobile" type="tel" required class="w-full px-4 py-3 mt-1 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition">
+                </div>
+                <button type="button" id="sendOtpBtn" class="w-full px-4 py-3 font-semibold text-white bg-indigo-600 rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
+                    Send OTP
+                </button>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="step2" class="form-step space-y-4">
+                <p class="text-sm text-center text-gray-500" id="otp-message">A 6-digit code has been sent to your mobile. Enter it below to verify.</p>
+                <div>
+                    <label for="otp" class="text-sm font-medium text-gray-700">6-Digit OTP</label>
+                    <input id="otp" name="otp" type="text" required maxlength="6" pattern="\d{6}" class="w-full px-4 py-3 mt-1 text-center text-xl tracking-widest border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <button type="button" id="verifyOtpBtn" class="w-full px-4 py-3 font-semibold text-white bg-green-500 rounded-xl shadow-lg hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-green-500 transition duration-150 transform hover:scale-[1.01]">
+                    Verify OTP
+                </button>
+                <button type="button" id="resendOtpBtn" class="w-full px-4 py-2 text-sm text-indigo-600 hover:text-indigo-800 transition duration-150" disabled>
+                    Resend OTP (<span id="countdown">60</span>s)
+                </button>
+            </div>
+
+            <!-- Step 3: Final Details -->
+            <div id="step3" class="form-step space-y-4">
+                <p class="text-sm text-center text-gray-500">Verification successful. Complete your profile details.</p>
+                
+                <div>
+                    <label for="fullName" class="text-sm font-medium text-gray-700">Full Name</label>
+                    <input id="fullName" name="fullName" type="text" required class="w-full px-4 py-3 mt-1 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="email" class="text-sm font-medium text-gray-700">Email Address</label>
+                    <input id="email" name="email" type="email" required class="w-full px-4 py-3 mt-1 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="password" class="text-sm font-medium text-gray-700">Password</label>
+                    <input id="password" name="password" type="password" required class="w-full px-4 py-3 mt-1 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                    <label for="photo" class="text-sm font-medium text-gray-700">Profile Photo (Optional)</label>
+                    <input id="photo" name="photo" type="file" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 mt-1">
+                </div>
+                
+                <button type="submit" id="submitBtn" class="w-full px-4 py-3 font-semibold text-white bg-indigo-600 rounded-xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
+                    Complete Registration
+                </button>
+            </div>
+        </form>
+        
+        <p class="text-sm text-center text-gray-600">
+            Already have an account? <a href="/login" class="font-medium text-indigo-600 hover:underline">Log In</a>
+        </p>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('riderForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+        const resendOtpBtn = document.getElementById('resendOtpBtn');
+        const mobileInput1 = document.getElementById('mobile1');
+        const otpInput = document.getElementById('otp');
+        const hiddenMobileInput = document.getElementById('mobileNumber');
+        const countdownSpan = document.getElementById('countdown');
+        const steps = {
+            1: document.getElementById('step1'),
+            // FIXED: Removed extra colon that caused the SyntaxError
+            2: document.getElementById('step2'), 
+            3: document.getElementById('step3')
+        };
+        let currentStep = 1;
+        let countdownTimer;
+
+        // --- Utility Functions ---
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            const color = type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+            toast.className = `max-w-xs p-4 rounded-xl shadow-xl text-white ${color} show`;
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function updateStepIndicator(step) {
+            ['step1', 'step2', 'step3'].forEach((id, index) => {
+                const indicator = document.getElementById(`${id}-indicator`);
+                if (index + 1 <= step) {
+                    indicator.classList.remove('bg-gray-300', 'text-gray-600');
+                    indicator.classList.add('bg-indigo-600', 'text-white', 'scale-105');
+                } else {
+                    indicator.classList.remove('bg-indigo-600', 'text-white', 'scale-105');
+                    indicator.classList.add('bg-gray-300', 'text-gray-600');
+                }
+            });
+        }
+
+        function setStep(step) {
+            steps[currentStep].classList.remove('active');
+            currentStep = step;
+            steps[currentStep].classList.add('active');
+            updateStepIndicator(currentStep);
+        }
+
+        function startCountdown() {
+            let seconds = 60;
+            resendOtpBtn.disabled = true;
+            countdownSpan.textContent = seconds;
+            
+            countdownTimer = setInterval(() => {
+                seconds--;
+                countdownSpan.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(countdownTimer);
+                    resendOtpBtn.disabled = false;
+                    countdownSpan.textContent = '0';
+                    resendOtpBtn.textContent = 'Resend OTP';
+                } else {
+                    resendOtpBtn.textContent = `Resend OTP (${seconds}s)`;
+                }
+            }, 1000);
+        }
+
+
+        // --- Event Listeners ---
+
+        sendOtpBtn.addEventListener('click', async () => {
+            const mobile = mobileInput1.value.trim();
+            if (!mobile || mobile.length < 10) {
+                return showToast('Please enter a valid mobile number.', 'error');
+            }
+
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.textContent = 'Sending...';
+
+            try {
+                const response = await fetch('/api/user/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile }),
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Update hidden field for final registration step
+                    hiddenMobileInput.value = mobile;
+                    document.getElementById('otp-message').textContent = `A 6-digit code has been sent to ${mobile}. (Simulated OTP: ${data.otp})`;
+                    showToast(data.message, 'success');
+                    setStep(2);
+                    startCountdown();
+                } else {
+                    showToast(data.message || 'Failed to send OTP.', 'error');
+                }
+            } catch (error) {
+                showToast('A network error occurred. Please try again.', 'error');
+            } finally {
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.textContent = 'Send OTP';
+            }
+        });
+
+        resendOtpBtn.addEventListener('click', () => {
+            // Re-trigger the sendOtpBtn click to resend
+            clearInterval(countdownTimer);
+            sendOtpBtn.click();
+        });
+
+        verifyOtpBtn.addEventListener('click', async () => {
+            const mobile = hiddenMobileInput.value;
+            const otp = otpInput.value.trim();
+
+            if (!otp || otp.length !== 6) {
+                return showToast('Please enter the 6-digit OTP.', 'error');
+            }
+
+            verifyOtpBtn.disabled = true;
+            verifyOtpBtn.textContent = 'Verifying...';
+            clearInterval(countdownTimer);
+
+            try {
+                const response = await fetch('/api/user/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile, otp }),
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(data.message, 'success');
+                    setStep(3); // Move to final registration step
+                } else {
+                    showToast(data.message || 'OTP verification failed.', 'error');
+                }
+            } catch (error) {
+                showToast('A network error occurred during verification.', 'error');
+            } finally {
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.textContent = 'Verify OTP';
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // This listener now handles Step 3: Final Registration
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Completing Registration...';
+
+            const formData = new FormData(form);
+
+            // Ensure the mobile number is correctly passed from the hidden field
+            formData.set('mobile', hiddenMobileInput.value);
+
+            try {
+                // Post to the updated /api/user/register endpoint
+                const response = await fetch('/api/user/register', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast('Registration successful! Redirecting to login...', 'success');
+                    // In a real app, this should redirect to login or dashboard
+                    setTimeout(() => window.location.href = '/login', 2000); 
+                } else {
+                    showToast(data.message || 'Registration failed.', 'error');
+                }
+            } catch (error) {
+                showToast('An error occurred. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Registration';
+            }
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase OTP</title>
+</head>
+<body>
+
+<h2>Phone OTP Verification</h2>
+<input type="text" id="phone" placeholder="+91XXXXXXXXXX" />
+<div id="recaptcha-container"></div>
+<button onclick="sendOTP()">Send OTP</button>
+
+<input type="text" id="otp" placeholder="Enter OTP" />
+<button onclick="verifyOTP()">Verify OTP</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDToUH_p-c21Ci0Tib3U863MdHTaqCcOsU",
+    authDomain: "hitaishi-health-care-app.firebaseapp.com",
+    databaseURL: "https://hitaishi-health-care-app-default-rtdb.firebaseio.com",
+    projectId: "hitaishi-health-care-app",
+    storageBucket: "hitaishi-health-care-app.firebasestorage.app",
+    messagingSenderId: "652006467508",
+    appId: "1:652006467508:web:1d5578b9faad68534cf4e1",
+    measurementId: "G-C40SHDN46Y"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Correct reCAPTCHA initialization (pass auth)
+  window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+    'size': 'invisible'
+  }, auth);
+
+  let confirmationResult;
+
+  window.sendOTP = function() {
+    const phoneNumber = document.getElementById("phone").value;
+    const appVerifier = window.recaptchaVerifier;
+
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((result) => {
+        confirmationResult = result;
+        alert("OTP sent!");
+      })
+      .catch((error) => {
+        console.error(error);
+        alert(error.message);
+      });
+  }
+
+  window.verifyOTP = function() {
+    const code = document.getElementById("otp").value;
+    confirmationResult.confirm(code)
+      .then((result) => {
+        alert("Phone verified: " + result.user.phoneNumber);
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Invalid OTP");
+      });
+  }
+</script>
+
+</body>
+</html>

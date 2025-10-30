@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Get Exact Location</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqW6tsp_sUG5-Xf6aXFzYuqrvRiGehGXg"></script>
+  </head>
+  <body>
+    <h2>Your Location Info:</h2>
+    <p id="output">Fetching...</p>
+
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(success, error);
+        } else {
+          document.getElementById("output").textContent =
+            "Geolocation not supported by your browser.";
+        }
+      }
+
+      function success(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+          if (status === "OK") {
+            if (results[0]) {
+              document.getElementById("output").textContent =
+                results[0].formatted_address;
+            } else {
+              document.getElementById("output").textContent =
+                "No address found.";
+            }
+          } else {
+            document.getElementById("output").textContent =
+              "Geocoder failed: " + status;
+          }
+        });
+      }
+
+      function error(err) {
+        document.getElementById("output").textContent =
+          "Error: " + err.message;
+      }
+
+      getLocation();
+    </script>
+  </body>
+</html>

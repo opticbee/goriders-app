@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Ride</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        .navbar-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 20px;
+        }
+
+        #nav-items {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 1200px) {
+            .navbar-flex {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            #nav-items {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-flex {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            #nav-items {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-flex {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            #nav-items {
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                margin-top: 20px;
+                gap: 15px;
+            }
+            #hamburger {
+                display: block;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-flex {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            #nav-items {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+        }
+        :root {
+            --primary-color: #ffce00;
+            --secondary-color: #000;
+            --accent-color: #ff1493;
+            --text-color: #333;
+            --light-bg: #f2edd8;
+            --white: #fff;
+            --gray: #666;
+            --light-gray: #f0f0f0;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--white);
+            max-width: 100%;
+            overflow-x: hidden;
+            color: var(--text-color);
+        }
+
+        /* Navbar Styles */
+        nav {
+            background-color: var(--light-bg);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 50px;
+            margin-right: 10px;
+            transition: var(--transition);
+        }
+
+        .logo-container a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.8em;
+            transition: var(--transition);
+        }
+
+        .logo-container a:hover {
+            color: var(--accent-color);
+        }
+
+        #hamburger {
+            font-size: 28px;
+            cursor: pointer;
+            display: none;
+            transition: var(--transition);
+        }
+
+        #hamburger:hover {
+            color: var(--accent-color);
+        }
+
+        #nav-items {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            transition: max-height 0.5s ease;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-gray);
+            padding: 8px 12px;
+            border-radius: 25px;
+            transition: var(--transition);
+        }
+
+        .search-container:focus-within {
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .search-container input {
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 5px;
+            width: 180px;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .role-btn {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 10px 15px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .role-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 20px;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        /* Hero Section */
+        .hero-container {
+            display: flex;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: var(--white);
+            flex-wrap: wrap;
+        }
+
+        .image-area, .text-area {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .image-area {
+            text-align: center;
+            animation: fadeInLeft 1s ease;
+        }
+
+        .image-area img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .image-area img:hover {
+            transform: scale(1.02);
+        }
+
+        .text-area {
+            padding-left: 40px;
+            animation: fadeInRight 1s ease;
+        }
+
+        .text-area h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+
+        .text-area p {
+            font-size: 1.2em;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Booking Section */
+        .booking-section {
+            padding: 30px 20px;
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-box {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            min-width: 200px;
+            transition: var(--transition);
+        }
+
+        .input-group:focus-within {
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .dot.green {
+            background-color: #4CAF50;
+        }
+
+        .dot.red {
+            background-color: #F44336;
+        }
+
+        .input-group input {
+            border: none;
+            outline: none;
+            font-size: 1em;
+            flex-grow: 1;
+            background: transparent;
+        }
+
+        .vehicle-select {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            cursor: pointer;
+            min-width: 150px;
+            transition: var(--transition);
+        }
+
+        .vehicle-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 206, 0, 0.3);
+        }
+
+        .search-button {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: var(--transition);
+            min-width: 150px;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Cards Section */
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px 20px;
+            background-color: var(--white);
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: 280px;
+            height: 320px;
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+            z-index: 1;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover:before {
+            opacity: 0.9;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+        }
+
+        .card img {
+            width: 70px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: brightness(0) invert(1);
+            z-index: 2;
+            position: relative;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .card p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .card-btn {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+            z-index: 2;
+            position: relative;
+        }
+
+        .card-btn:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        /* Impact Section */
+        .impact-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #424242, #fce0b3);
+            border-radius: 20px;
+            width: 90%;
+            margin: 40px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 1s ease;
+        }
+
+        .impact-section h2 {
+            font-size: 2.5em;
+            color: var(--white);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .impact-section p {
+            color: var(--white);
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .stat-circle {
+            text-align: center;
+            height: 180px;
+            width: 180px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            animation: pulse 2s infinite;
+        }
+
+        .stat-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-circle img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .stat-circle p:first-of-type {
+            font-size: 1.8em;
+            color: var(--accent-color);
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .stat-circle p:last-of-type {
+            color: var(--secondary-color);
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        /* Tabs Section */
+        .tabs-section {
+            background-color: var(--white);
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 30px;
+        }
+
+        .tab {
+            padding: 12px 30px;
+            border: none;
+            background-color: var(--white);
+            color: var(--text-color);
+            cursor: pointer;
+            margin: 0 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        .tab:hover {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+        }
+
+        .section {
+            padding: 40px 20px;
+        }
+
+        .services, .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service, .feature {
+            text-align: center;
+            width: 300px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .service:hover, .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .service img, .feature img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .service:hover img, .feature:hover img {
+            transform: scale(1.05);
+        }
+
+        .service h2, .feature h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+
+        .service p, .feature p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Safety Section */
+        .safety-section {
+            display: flex;
+            background-color: var(--white);
+            padding: 60px 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .safety-text {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            animation: fadeInLeft 1s ease;
+        }
+
+        .safety-text strong {
+            font-size: 2.5em;
+            color: #6fa6f9;
+            display: block;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .safety-text p {
+            color: #4a5f76;
+            font-size: 1.1em;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .safety-image {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+            animation: fadeInRight 1s ease;
+        }
+
+        .safety-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .safety-image img:hover {
+            transform: scale(1.03);
+        }
+
+        /* Options Section */
+        .options-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .options-section h2 {
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: var(--text-color);
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .option-card {
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .option-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .option-card div {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .option-card p {
+            font-size: 1em;
+            line-height: 1.6;
+            color: var(--gray);
+        }
+
+        /* Apps Section */
+        .apps-section {
+            padding: 80px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-gray);
+            border-radius: 20px;
+            margin: 40px;
+        }
+
+        .apps-section h2 {
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-size: 2em;
+            text-align: center;
+        }
+
+        .apps-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .app-card {
+            border: 1px solid #ddd;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-card img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            border: 4px solid #ddd;
+            transition: var(--transition);
+        }
+
+        .app-card:hover img {
+            border-color: var(--primary-color);
+        }
+
+        .app-card div:first-of-type {
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .app-card div:nth-of-type(2) {
+            font-size: 0.9em;
+            color: var(--gray);
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .app-download {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 0.9em;
+            transition: var(--transition);
+        }
+
+        .app-download:hover {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 60px 20px;
+            background-color: var(--white);
+        }
+
+        .faq-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-container h2 {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #ddd;
+            padding: 20px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .faq-question {
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .faq-arrow {
+            transition: transform 0.3s ease-in-out;
+            font-size: 1.2em;
+        }
+
+        .faq-answer {
+            font-size: 1em;
+            color: var(--gray);
+            margin-top: 15px;
+            display: none;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 60px 20px 30px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 30px;
+        }
+
+        .footer-column {
+            width: 22%;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .footer-column a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-column a:hover:after {
+            width: 100%;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-social a {
+            color: var(--white);
+            font-size: 1.5em;
+            transition: var(--transition);
+        }
+
+        .footer-social a:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-legal {
+            text-align: center;
+        }
+
+        .footer-legal p {
+            margin: 0 0 10px;
+        }
+
+        .footer-legal a {
+            color: var(--white);
+            text-decoration: none;
+            margin-right: 15px;
+            transition: var(--transition);
+        }
+
+        .footer-legal a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .footer-column {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-container {
+                flex-direction: column;
+            }
+            
+            .text-area {
+                padding-left: 0;
+                text-align: center;
+                margin-top: 30px;
+            }
+            
+            .safety-section {
+                flex-direction: column;
+            }
+            
+            .safety-text {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #hamburger {
+                display: block;
+            }
+            
+            #nav-items {
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                margin-top: 20px;
+                gap: 15px;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            .search-container input {
+                width: 100%;
+            }
+            
+            .role-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .social-icons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .input-group, .vehicle-select, .search-button {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+            
+            .impact-section h2 {
+                font-size: 2em;
+            }
+            
+            .text-area h1 {
+                font-size: 2.2em;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer-column {
+                width: 100%;
+            }
+            
+            .stat-circle {
+                height: 150px;
+                width: 150px;
+            }
+            
+            .stat-circle img {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .stat-circle p:first-of-type {
+                font-size: 1.5em;
+            }
+            
+            .card {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .tab {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            
+            .service, .feature {
+                width: 100%;
+            }
+            
+            .apps-section {
+                margin: 20px 10px;
+            }
+            
+            .faq-container {
+                padding: 20px;
+            }
+            
+            .faq-question {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-container">
+            <div class="navbar-flex">
+                <div class="logo-container">
+                    <a href="index.html">
+                        <img src="images/Goride.png" alt="GoRide Logo" class="logo">
+                    </a>
+                    <a href="index.html" class="brand-name">GoRide</a>
+                </div>
+                <div id="nav-items">
+                    <div class="search-container">
+                        <input type="text" placeholder="Search..." aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="role-buttons">
+                        <a href="login.html" class="role-btn">Rider</a>
+                        <a href="driverlogin.html" class="role-btn">Driver</a>
+                        <a href="Admin.html" class="role-btn">Admin</a>
+                        <a href="test.html" class="role-btn">Location</a>
+                    </div>
+                    <div class="nav-links">
+                        <a href="about.html">About Us</a>
+                        <a href="contact.html">Contact Us</a>
+                    </div>
+                    <div class="social-icons">
+                        
+                        <div class="social-icons" id="userNav">
+                            <a href="login.html"><i class="fas fa-user-circle"></i></a>
+                        </div>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                <div id="hamburger" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-container">
+        <div class="image-area">
+            <img src="images/auto_bike_car_bus.png" alt="Transportation Options">
+        </div>
+        <div class="text-area">
+            <h1>Ride Smarter with GoRide</h1>
+            <p>GoRide is India's leading ride-hailing app, offering bike taxis, auto rides, and cab services across 150+ cities. With over 100 million safe and reliable rides completed, GoRide is transforming urban travel by providing affordable, fast, and comfortable transportation solutions.</p>
+        </div>
+    </div>
+
+    <!-- Booking Section -->
+    <div class="booking-section">
+        <div class="search-box">
+            <div class="input-group">
+                <span class="dot green"></span>
+                <input type="text" placeholder="Enter Pickup Location">
+            </div>
+            <div class="input-group">
+                <span class="dot red"></span>
+                <input type="text" placeholder="Enter Destination">
+            </div>
+            <select class="vehicle-select">
+                <option value="bike">Bike (1 person)</option>
+                <option value="auto">Auto (upto 3)</option>
+                <option value="cab">Cab (upto 6)</option>
+            </select>
+            <button class="search-button">
+                <a href="ride.html" style="text-decoration: none; color: inherit;">SEARCH CABS</a>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="cards-container">
+        <!-- Ride Box -->
+        <div class="card" style="background-image: url('https://st3.depositphotos.com/1105977/15370/i/450/depositphotos_153709400-stock-photo-high-power-motorcycle-chopper-with.jpg');">
+            <div class="card-content">
+                <img src="https://media.gettyimages.com/id/158086977/vector/boy-and-girl-riding-motorcycle.jpg?s=612x612&w=gi&k=20&c=W1RFf7yU_TvKK6URXtuSs3MGVOCqlsGkUrXxRXOv5tY=" alt="Ride Image">
+                <h2>Ride</h2>
+                <p>Go anywhere with GoRide. Request a ride, hop in, and go.</p>
+                <button class="card-btn">Details</button>
+            </div>
+        </div>
+
+        <!-- Courier Box -->
+        <div class="card" style="background-image: url('https://img.freepik.com/free-vector/two-loaders-carrying-big-carton-box-couriers-scooter_74855-14186.jpg?semt=ais_hybrid');">
+            <div class="card-content">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_2f4KvRaQiCuI3t4gQHPxM1hdYgemp-pAkybF-kTRhQ1_irekTGML-aTJeiFGqrzGpaE&usqp=CAU" alt="Courier Image">
+                <h2>Courier</h2>
+                <p>Fast delivery service to your doorstep.</p>
+                <button class="card-btn">Details</button>
+            </div>
+        </div>
+
+        <!-- Food Delivery Box -->
+        <div class="card" style="background-image: url('https://i.pinimg.com/736x/70/f6/c4/70f6c496618e9aed105c241b01ab02d7.jpg');">
+            <div class="card-content">
+                <img src="https://cdn-icons-png.flaticon.com/512/3063/3063824.png" alt="GoRide Driver">
+                <h2>GoRide Driver</h2>
+                <p>Earn by riding and delivering safely.</p>
+                <button class="card-btn">Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impact Section -->
+    <div class="impact-section">
+        <h2>Our Impact</h2>
+        <p>Our presence in the country has transformed intra-city travel, making last-mile connectivity more affordable and accessible for everyone.</p>
+        <div class="stats-container">
+            <div class="stat-circle">
+                <img src="https://cdn-icons-png.flaticon.com/512/1173/1173770.png" alt="Downloads">
+                <p>25M+</p>
+                <p>Downloads</p>
+            </div>
+
+            <div class="stat-circle">
+                <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="Cities">
+                <p>100+</p>
+                <p>Cities</p>
+            </div>
+
+            <div class="stat-circle">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Captains">
+                <p>1M+</p>
+                <p>Captains</p>
+            </div>
+
+            <div class="stat-circle">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Customers">
+                <p>10M+</p>
+                <p>Customers</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Section -->
+    <div class="tabs-section">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button id="customersTab" onclick="showSection('customers')" class="tab active">Customers</button>
+            <button id="driversTab" onclick="showSection('drivers')" class="tab">Drivers</button>
+        </div>
+
+        <!-- Customers Section -->
+        <div id="customers" class="section">
+            <div class="services">
+                <div class="service">
+                    <img src="https://motoriderentals.in/wp-content/uploads/2023/08/motoride-rentals-free-vehicle-delivery.png" alt="Bike">
+                    <h2>India's largest Bike-Taxi</h2>
+                    <p>Cut through traffic, reach on time and save money.</p>
+                </div>
+                <div class="service">
+                    <img src="https://png.pngtree.com/png-vector/20230416/ourmid/pngtree-3-wheeler-vector-png-image_6699799.png" alt="Auto">
+                    <h2>5-minute Auto</h2>
+                    <p>Never wait for an auto ride again!</p>
+                </div>
+                <div class="service">
+                    <img src="https://cooltaxi.in/wp-content/uploads/2023/09/Untitled-1_clipdrop-background-removal.png" alt="Car">
+                    <h2>Lowest Priced Cabs</h2>
+                    <p>More wheels. More comfort.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drivers Section -->
+        <div id="drivers" class="section" style="display: none;">
+            <div class="features">
+                <div class="feature">
+                    <img src="https://img.freepik.com/premium-vector/man-practicing-meditation-while-sitting-crosslegged_797980-4084.jpg?w=360" alt="Zero Pressure Rides">
+                    <h3>Zero Pressure Rides</h3>
+                    <p>Decide on when to go on the next ride.</p>
+                </div>
+                <div class="feature">
+                    <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRgm56FkvmP4R8Fagyz8Bme7nAvDM-qEpa7SIzrYr-RVhohAlvS" alt="Redeemable Earnings">
+                    <h3>Redeemable Earnings</h3>
+                    <p>Transfer earnings from GoRide wallet to bank account.</p>
+                </div>
+                <div class="feature">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqPrt25HwMrBy0VqrdwfvHibQTdiUgM900YroqXMiRR0wIVqqLyvzrt3Fla1T69-b__0&usqp=CAU" alt="Insured Rides">
+                    <h3>Insured Rides</h3>
+                    <p>Accidental coverage up to Rs 5 Lakh.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Safety Section -->
+    <div class="safety-section">
+        <div class="safety-text">
+            <strong>Safe Rides, Every Time.</strong>
+            <p>At GoRide, the well-being of our customers is above everything else. We are constantly in 
+                pursuit of enhancing our safety measures to ensure every GoRide ride is a pleasant and comfortable
+                experience. GoRide prioritizes your well-being above all else. We are constantly working to enhance
+                our safety measures, so every GoRide ride is pleasant and comfortable.
+            </p>
+        </div>
+        <div class="safety-image">
+            <img src="https://media.istockphoto.com/id/1007795092/vector/car-accident-icon-vector-icon-simple-element-illustration-car-accident-symbol-design-can-be.jpg?s=612x612&w=0&k=20&c=A3Gb5unVY4Mx93fbF9ZNKiZ6skCVHnhVCqzABXm-NtM=" alt="Safety Image">
+        </div>
+    </div>
+
+    <!-- Options Section -->
+    <div class="options-section">
+        <h2>There's Our GoRide for everyone</h2>
+        <div class="options-container">
+            <!-- First Option -->
+            <div class="option-card">
+                <img src="https://images.yourstory.com/cs/2/d99b1110116911ed9e63f54395117598/Rapido-04-1705071387363.png" alt="Any Budget">
+                <div>For any budget</div>
+                <p>Your ride, your way. Choose from Bikes, Autos, Prime Sedans, and Prime SUVs to find the perfect vehicle for your budget.</p>
+            </div>
+
+            <!-- Second Option -->
+            <div class="option-card">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/businessman-booking-online-taxi-service-illustration-download-in-svg-png-gif-file-formats--call-order-book-cab-services-pack-vehicle-illustrations-4246738.png" alt="Any Distance">
+                <div>For any distance</div>
+                <p>Need a ride across town or a trip out of town? Book a Daily ride within the city or explore beyond with Outstation.</p>
+            </div>
+
+            <!-- Third Option -->
+            <div class="option-card">
+                <img src="https://static.vecteezy.com/system/resources/previews/005/238/726/non_2x/online-application-for-call-taxi-service-by-smart-phone-and-set-location-for-destination-free-vector.jpg" alt="Any Duration">
+                <div>For any duration</div>
+                <p>Need a ride? don't worry our GoRide offers Daily, Outstation, and hourly Rental packages for any budget or duration.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apps Section -->
+    <div class="apps-section">
+        <h2>Download our apps to get the best experience</h2>
+        <div class="apps-container">
+            <div class="app-card">
+                <img src="images/Goride.png" alt="GoRide App">
+                <div>GoRide</div>
+                <div>Book cabs, buy insurance, access GoRide Money and much more</div>
+                <a href="#" class="app-download">Download →</a>
+            </div>
+
+            <div class="app-card">
+                <img src="images/Goride.png" alt="GoRide Driver App">
+                <div>GoRide Driver</div>
+                <div>Register as a driver to take rides, see your earnings and incentives</div>
+                <a href="#" class="app-download">Download →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <div class="faq-container">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item" onclick="toggleAnswer(1)">
+                <div class="faq-question">Can I have a lost item delivered to me? <span id="arrow1" class="faq-arrow">▼</span></div>
+                <div id="answer1" class="faq-answer">Unfortunately, GoRide doesn't offer a service to deliver lost items. You can contact your driver through the app to arrange a pickup.</div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleAnswer(2)">
+                <div class="faq-question">Can I rent a car using GoRide? <span id="arrow2" class="faq-arrow">▼</span></div>
+                <div id="answer2" class="faq-answer">GoRide doesn't directly offer car rentals. However, they may partner with rental services in some locations.</div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleAnswer(3)">
+                <div class="faq-question">Can I request a ride that picks up friends in different locations? <span id="arrow3" class="faq-arrow">▼</span></div>
+                <div id="answer3" class="faq-answer">You can add multiple destinations to your ride before you request it, to pick up friends at different locations.</div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleAnswer(4)">
+                <div class="faq-question">Can I request a taxi on GoRide? <span id="arrow4" class="faq-arrow">▼</span></div>
+                <div id="answer4" class="faq-answer">In some cities, GoRide offers a taxi option, allowing you to request a traditional taxi through the GoRide app.</div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleAnswer(5)">
+                <div class="faq-question">Is there a GoRide ride option for 5 people? <span id="arrow5" class="faq-arrow">▼</span></div>
+                <div id="answer5" class="faq-answer">Yes, GoRide offers options like GoRideXL or GoRideSUV that can accommodate 5 passengers. Be sure to select the appropriate option when requesting your ride.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">Our offerings</a></li>
+                    <li><a href="#">Newsroom</a></li>
+                    <li><a href="#">Investors</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Products</h3>
+                <ul>
+                    <li><a href="#">Ride</a></li>
+                    <li><a href="#">Drive</a></li>
+                    <li><a href="#">Deliver</a></li>
+                    <li><a href="#">Eat</a></li>
+                    <li><a href="#">GoRide for Business</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Global Citizenship</h3>
+                <ul>
+                    <li><a href="#">Safety</a></li>
+                    <li><a href="#">Diversity and Inclusion</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Travel</h3>
+                <ul>
+                    <li><a href="#">Reserve</a></li>
+                    <li><a href="#">Airports</a></li>
+                    <li><a href="#">Cities</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+    
+            <div class="footer-legal">
+                <p>&copy; 2025 GoRide Technologies Inc.</p>
+                <a href="#">Privacy</a>
+                <a href="#">Accessibility</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle Menu Function
+        function toggleMenu() {
+            const menu = document.getElementById('nav-items');
+            if (menu.style.display === 'flex') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'flex';
+            }
+        }
+
+        // Handle Resize Function
+        function handleResize() {
+            const width = window.innerWidth;
+            const navItems = document.getElementById('nav-items');
+            const hamburger = document.getElementById('hamburger');
+
+            if (width <= 768) {
+                hamburger.style.display = 'block';
+                if (navItems.style.display !== 'flex') {
+                    navItems.style.display = 'none';
+                }
+            } else {
+                hamburger.style.display = 'none';
+                navItems.style.display = 'flex';
+            }
+        }
+
+        // Toggle FAQ Answers
+        function toggleAnswer(id) {
+            const answer = document.getElementById(`answer${id}`);
+            const arrow = document.getElementById(`arrow${id}`);
+            
+            if (answer.style.display === "none" || answer.style.display === "") {
+                answer.style.display = "block";
+                arrow.style.transform = "rotate(180deg)";
+            } else {
+                answer.style.display = "none";
+                arrow.style.transform = "rotate(0deg)";
+            }
+        }
+
+        // Show Section Function
+        function showSection(section) {
+            // Hide both sections
+            document.getElementById('customers').style.display = 'none';
+            document.getElementById('drivers').style.display = 'none';
+
+            // Show the selected section
+            document.getElementById(section).style.display = 'block';
+
+            // Update tab styles
+            document.getElementById('customersTab').classList.toggle('active', section === 'customers');
+            document.getElementById('driversTab').classList.toggle('active', section === 'drivers');
+        }
+
+        // Add event listeners
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('load', handleResize);
+
+        // Add intersection observer for animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.image-area, .text-area, .search-box, .impact-section, .service, .feature, .safety-text, .safety-image, .option-card, .app-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 1s ease forwards';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userNav = document.getElementById("userNav");
+            const userData = sessionStorage.getItem("user");
+
+            if (userData) {
+                const user = JSON.parse(userData);
+
+                // fallback if no photo
+                const imgSrc = user.profilePhoto 
+                    ? "/" + user.profilePhoto   // served from /uploads/
+                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // dummy avatar
+
+                // replace content with user info
+                userNav.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <img src="${imgSrc}" alt="Profile" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
+                        <span style="font-weight:600;">${user.username}</span>
+                        <button id="logoutBtn" style="margin-left:10px; padding:4px 10px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;">
+                            Logout
+                        </button>
+                    </div>
+                `;
+
+                // attach logout action
+                document.getElementById("logoutBtn").addEventListener("click", () => {
+                    sessionStorage.removeItem("user");
+                    window.location.href = "login.html";
+                });
+            }
+        });
+    </script>
+
+
+</body>
+</html>

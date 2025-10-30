@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GoRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #toast {
+            position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999;
+            transform: translateX(120%); opacity: 0; transition: all 0.5s ease;
+        }
+        #toast.show { transform: translateX(0); opacity: 1; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div id="toast" class="max-w-xs p-4 rounded-lg shadow-lg text-white">Toast message</div>
+
+    <div class="w-full max-w-sm p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-center text-gray-900">Welcome Back!</h2>
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="identifier" class="text-sm font-medium text-gray-700">Email or Mobile</label>
+                <input id="identifier" name="identifier" type="text" required class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <label for="password" class="text-sm font-medium text-gray-700">Password</label>
+                <input id="password" name="password" type="password" required class="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
+                <button type="submit" id="loginBtn" class="w-full px-4 py-2 font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Log In
+                </button>
+            </div>
+        </form>
+        <div class="text-sm text-center text-gray-600">
+            <p>New Rider? <a href="register.html" class="font-medium text-indigo-600 hover:underline">Create an account</a></p>
+            <p class="mt-2">Want to drive? <a href="driver.html" class="font-medium text-amber-600 hover:underline">Register as a driver</a></p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+
+            function showToast(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                const color = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+                toast.className = `max-w-xs p-4 rounded-lg shadow-lg text-white ${color} show`;
+                setTimeout(() => toast.classList.remove('show'), 4000);
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Logging in...';
+
+                const identifier = document.getElementById('identifier').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ identifier, password }),
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        showToast('Login successful!', 'success');
+                        // Store user info in localStorage for cross-tab session state
+                        localStorage.setItem('goRideUser', JSON.stringify(data.user));
+
+                        // Redirect based on role
+                        if (data.user.role === 'driver') {
+                            window.location.href = '/driver-dashboard.html'; // Create this page
+                        } else if (data.user.role === 'rider') {
+                            window.location.href = '/rider-dashboard.html'; // Create this page
+                        } else {
+                            window.location.href = '/';
+                        }
+
+                    } else {
+                        showToast(data.message || 'Login failed.', 'error');
+                    }
+                } catch (error) {
+                    showToast('An error occurred. Please try again.', 'error');
+                } finally {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Log In';
+                }
+            });
+        });
+    </script>
+    
+</body>
+</html>

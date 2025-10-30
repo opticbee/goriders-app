@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Ride</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+</head>
+<body style="font-family: sans-serif; margin: 0; padding: 0; background-color: #fff; max-width: 100%;">
+
+<!-- Navbar -->
+<nav style="background-color: rgb(242, 237, 216); padding: 20px; position: sticky; top: 0; z-index: 1000;">
+    
+
+    <!-- Menu Items -->
+    <div id="nav-items" style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 20px;">
+        
+        <!-- Header Row -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <!-- Logo + Title -->
+        <div style="display: flex; align-items: center;">
+            <a href="index.html">
+                <img src="images/Goride.png" alt="GoRide Logo" style="height: 50px; margin-right: 10px;">
+            </a>
+            <a href="index.html" style="text-decoration: none; color: #000; font-weight: bold; font-size: 1.8em;">GoRide</a>
+        </div>
+
+        <!-- Hamburger Icon -->
+        <div id="hamburger" onclick="toggleMenu()" style="font-size: 28px; cursor: pointer; display: none;">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+        
+        <!-- Search Bar -->
+        <div style="display: flex; align-items: center; background-color: #f0f0f0; padding: 8px 12px; border-radius: 5px;">
+            <input type="text" placeholder="Search..." style="border: none; outline: none; background: transparent; padding: 5px;">
+            <i class="fas fa-search" style="color: #555; cursor: pointer;"></i>
+        </div>
+
+        <!-- Role Buttons -->
+        <div style="display: flex; gap: 10px;">
+            <a href="login.html" style="background-color: #000; color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: 500;">Rider</a>
+            <a href="driverlogin.html" style="background-color: #000; color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: 500;">Driver</a>
+            <a href="admin.html" style="background-color: #000; color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: 500;">Admin</a>
+        </div>
+
+        <!-- Nav Links -->
+        <div style="display: flex; gap: 20px;">
+            <a href="about.html" style="text-decoration: none; color: #333; font-weight: 500;">About Us</a>
+            <a href="contact.html" style="text-decoration: none; color: #333; font-weight: 500;">Contact Us</a>
+        </div>
+
+        <!-- Social Icons -->
+        <div style="display: flex; gap: 15px;">
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-twitter"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-youtube"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-telegram"></i></a>
+        </div>
+    </div>
+</nav>
+
+    
+
+    <!-- about -->
+    <div class="container" style="display: flex; align-items: center; padding: 20px; background-color: #f0f0f0;">
+        <div class="image-area" style="flex: 1; text-align: center;">
+          <img src="images/images-removebg-preview.png" alt="Your Image" style="height: 400px;">
+        </div>
+        <div class="text-area" style="flex: 1; padding-left: 20px;">
+          <h1 style="font-size: 3em; margin: 0; color: #333;">Moving people, and the world</h1>
+          <p style="font-size: 1.2em; color: #666;">GoRide, with Bike-Taxis, Autos & Cabs is revolutionising the way India travels. With a presence in 150+ cities and over 100 million safe rides completed, GoRide is becoming India’s go-to app for comfortable and affordable rides.</p>
+        </div>
+    </div>
+
+    <!-- booking -->
+    <div style="height: 120px; font-family: Arial, sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; margin: 0;">
+        <div class="search-box" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); display: flex; align-items: center; gap: 15px;">
+            <div class="input-group" style="display: flex; align-items: center; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex-grow: 1;">
+                <span class="dot green" style="width: 10px; height: 10px; border-radius: 50%; background-color: green; margin-right: 10px;"></span>
+                <input type="text" placeholder="Enter Pickup Location" style="border: none; outline: none; font-size: 1em; flex-grow: 1;">
+            </div>
+            <div class="input-group" style="display: flex; align-items: center; background: #fff; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); flex-grow: 1;">
+                <span class="dot red" style="width: 10px; height: 10px; border-radius: 50%; background-color: red; margin-right: 10px;"></span>
+                <input type="text" placeholder="Enter Destination" style="border: none; outline: none; font-size: 1em; flex-grow: 1;">
+            </div>
+            <select class="vehicle-select" style="padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 1em; cursor: pointer;">
+                <option value="bike">Bike (1 person)</option>
+                <option value="auto">Auto (upto 3)</option>
+                <option value="cab">Cab (upto 6)</option>
+            </select>
+            <button class="search-button" style="background-color: #000; color: white; padding: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1em; transition: background 0.3s;">SEARCH CABS</button>
+        </div>
+    </div>
+    
+
+    <!-- cards -->
+    <div style="display: flex; justify-content: center; gap: 65px; padding: 20px; background-color: #fff; font-family: Arial, sans-serif;">
+        <!-- Ride Box -->
+        <div style="width: 180px; height: 220px; background: url('https://st3.depositphotos.com/1105977/15370/i/450/depositphotos_153709400-stock-photo-high-power-motorcycle-chopper-with.jpg') no-repeat center/cover; padding: 15px; border-radius: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+            <img src="https://media.gettyimages.com/id/158086977/vector/boy-and-girl-riding-motorcycle.jpg?s=612x612&w=gi&k=20&c=W1RFf7yU_TvKK6URXtuSs3MGVOCqlsGkUrXxRXOv5tY=" alt="Ride Image" style="width: 60px; height: auto;">
+            <h2 style="font-size: 16px; margin: 5px 0; color: #fff;">Ride</h2>
+            <p style="font-size: 12px; margin: 5px 0; color: #fff;">Go anywhere with GoRide. Request a ride, hop in, and go.</p>
+            <button style="background-color: #4e4b4b; color: #fff; border: none; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 12px;">Details</button>
+        </div>
+    
+        <!-- Courier Box -->
+        <div style="width: 180px; height: 220px; background: url('https://img.freepik.com/free-vector/two-loaders-carrying-big-carton-box-couriers-scooter_74855-14186.jpg?semt=ais_hybrid') no-repeat center/cover; padding: 15px; border-radius: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_2f4KvRaQiCuI3t4gQHPxM1hdYgemp-pAkybF-kTRhQ1_irekTGML-aTJeiFGqrzGpaE&usqp=CAU" alt="Courier Image" style="width: 60px; height: auto;">
+            <h2 style="font-size: 16px; margin: 5px 0; color: #000;">Courier</h2>
+            <p style="font-size: 12px; margin: 5px 0; color: #000;">Fast delivery service to your doorstep.</p>
+            <button style="background-color: #4e4b4b; color: #fff; border: none; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 12px;">Details</button>
+        </div>
+    
+        <!-- Food Delivery Box -->
+        <div style="width: 180px; height: 220px; background: url('https://i.pinimg.com/736x/70/f6/c4/70f6c496618e9aed105c241b01ab02d7.jpg') no-repeat center/cover; padding: 15px; border-radius: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+            <img src="https://cdn-icons-png.flaticon.com/512/3063/3063824.png" alt="GoRide Driver" style="width: 60px; height: auto;">
+            <h2 style="font-size: 16px; margin: 5px 0; color: #000; font-weight: bolder;">GoRide Driver</h2>
+            <p style="font-size: 12px; margin: 5px 0; color: #000;">Earn by riding and delivering safely.</p>
+            <button style="background-color: #4e4b4b; color: #fff; border: none; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 12px;">Details</button>
+        </div>
+        
+    </div>
+    
+
+    <!-- parabola -->
+    <div style="text-align: center; padding: 50px; background: linear-gradient(to right, #424242, #fce0b3); border-radius: 50px; width: 80%; margin: 0 auto; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+        <h2 style="font-size: 2.5em; color: white; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">Our Impact</h2>
+        
+        <p style="color: white; font-size: 1.2em; line-height: 1.6; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
+            Our presence in the country has transformed intra-city travel, making last-mile connectivity more affordable and accessible for everyone.
+        </p>
+        
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px;">
+            <div style="text-align: center; height: 180px; width: 180px; border-radius: 50%; background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                <img src="https://cdn-icons-png.flaticon.com/512/1173/1173770.png" alt="Downloads" style="width: 60px; height: 60px; margin-bottom: 10px;">
+                <p style="font-size: 1.5em; color: #ff1493; font-weight: bold;">25M+</p>
+                <p style="color: black; font-size: 1em;">Downloads</p>
+            </div>
+    
+            <div style="text-align: center; height: 180px; width: 180px; border-radius: 50%; background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="Cities" style="width: 60px; height: 60px; margin-bottom: 10px;">
+                <p style="font-size: 1.5em; color: #ff1493; font-weight: bold;">100+</p>
+                <p style="color: black; font-size: 1em;">Cities</p>
+            </div>
+    
+            <div style="text-align: center; height: 180px; width: 180px; border-radius: 50%; background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Captains" style="width: 60px; height: 60px; margin-bottom: 10px;">
+                <p style="font-size: 1.5em; color: #ff1493; font-weight: bold;">1M+</p>
+                <p style="color: black; font-size: 1em;">Captains</p>
+            </div>
+    
+            <div style="text-align: center; height: 180px; width: 180px; border-radius: 50%; background-color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Customers" style="width: 60px; height: 60px; margin-bottom: 10px;">
+                <p style="font-size: 1.5em; color: #ff1493; font-weight: bold;">10M+</p>
+                <p style="color: black; font-size: 1em;">Customers</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- customers and drivers -->
+    <div style="font-family: sans-serif; margin: 0; background-color: #fff; text-align: center; margin-top: 30px;">
+
+        <!-- Tabs -->
+        <div class="tabs" style="display: flex; justify-content: center; margin-top: 60px; padding-top: 30px;">
+            <button id="customersTab" onclick="showSection('customers')" class="tab active"
+                style="padding: 10px 20px; border: none; background-color: #ffce00; color: #000; cursor: pointer; margin: 0 10px; border-radius: 5px 5px 0 0;">
+                Customers
+            </button>
+            <button id="driversTab" onclick="showSection('drivers')" class="tab"
+                style="padding: 10px 20px; border: none; background-color: #fff; color: #333; cursor: pointer; margin: 0 10px; border-radius: 5px 5px 0 0;">
+                Drivers
+            </button>
+        </div>
+    
+        <!-- Customers Section -->
+        <div id="customers" class="section">
+            <div class="services" style="display: flex; justify-content: center; margin-top: 50px;">
+                <div class="service" style="text-align: center; margin: 0 20px;">
+                    <img src="https://motoriderentals.in/wp-content/uploads/2023/08/motoride-rentals-free-vehicle-delivery.png" alt="Bike" style="width: 200px; height: auto; margin-bottom: 20px;">
+                    <h2 style="color: #333; margin-bottom: 10px;"><br><br><br>India's largest Bike-Taxi</h2>
+                    <p style="color: #666; line-height: 1.6;">Cut through traffic, reach on time and save money.</p>
+                </div>
+                <div class="service" style="text-align: center; margin: 0 20px;">
+                    <img src="https://png.pngtree.com/png-vector/20230416/ourmid/pngtree-3-wheeler-vector-png-image_6699799.png" alt="Auto" style="width: 200px; height: auto; margin-bottom: 20px;">
+                    <h2 style="color: #333; margin-bottom: 10px;"><br>5-minute Auto</h2>
+                    <p style="color: #666; line-height: 1.6;">Never wait for an auto ride again!</p>
+                </div>
+                <div class="service" style="text-align: center; margin: 0 20px;">
+                    <img src="https://cooltaxi.in/wp-content/uploads/2023/09/Untitled-1_clipdrop-background-removal.png" alt="Car" style="width: 200px; height: auto; margin-bottom: 20px;">
+                    <h2 style="color: #333; margin-bottom: 10px;">Lowest Priced Cabs</h2>
+                    <p style="color: #666; line-height: 1.6;">More wheels. More comfort.</p>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Drivers Section -->
+        <div id="drivers" class="section" style="display: none;">
+            <div class="features" style="display: flex; justify-content: center; margin-top: 50px;">
+                <div class="feature" style="text-align: center; margin: 0 20px; width: 30%;">
+                    <img src="https://img.freepik.com/premium-vector/man-practicing-meditation-while-sitting-crosslegged_797980-4084.jpg?w=360" alt="Zero Pressure Rides" style="width: 200px; height: auto; margin-bottom: 20px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Zero Pressure Rides</h3>
+                    <p style="color: #666; line-height: 1.6;">Decide on when to go on the next ride.</p>
+                </div>
+                <div class="feature" style="text-align: center; margin: 0 20px; width: 30%;">
+                    <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRgm56FkvmP4R8Fagyz8Bme7nAvDM-qEpa7SIzrYr-RVhohAlvS" alt="Redeemable Earnings" style="width: 200px; height: auto; margin-bottom: 20px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Redeemable Earnings</h3>
+                    <p style="color: #666; line-height: 1.6;">Transfer earnings from GoRide wallet to bank account.</p>
+                </div>
+                <div class="feature" style="text-align: center; margin: 0 20px; width: 30%;">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJqPrt25HwMrBy0VqrdwfvHibQTdiUgM900YroqXMiRR0wIVqqLyvzrt3Fla1T69-b__0&usqp=CAU" alt="Insured Rides" style="width: 200px; height: auto; margin-bottom: 20px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Insured Rides</h3>
+                    <p style="color: #666; line-height: 1.6;">Accidental coverage up to Rs 5 Lakh.</p>
+                </div>
+            </div>
+        </div>
+    
+        <!-- JavaScript to Switch Sections -->
+        <script>
+            function showSection(section) {
+                // Hide both sections
+                document.getElementById('customers').style.display = 'none';
+                document.getElementById('drivers').style.display = 'none';
+    
+                // Show the selected section
+                document.getElementById(section).style.display = 'block';
+    
+                // Update tab styles
+                document.getElementById('customersTab').style.backgroundColor = section === 'customers' ? '#ffce00' : '#fff';
+                document.getElementById('customersTab').style.color = section === 'customers' ? '#000' : '#333';
+    
+                document.getElementById('driversTab').style.backgroundColor = section === 'drivers' ? '#ffce00' : '#fff';
+                document.getElementById('driversTab').style.color = section === 'drivers' ? '#000' : '#333';
+            }
+        </script>
+    
+    </div><hr>
+
+    <!-- safe rides -->
+    <div style="display: flex; background-color: #fff; max-width: 100%; padding: 20px; align-items: center;">
+        <div style="flex: 1; margin-left: 10%;">
+            <p style="font-size: 18px; line-height: 1.6; font-weight: 500; color: #333; margin: 0;">
+                <strong style="font-size: 32px; color: #6fa6f9;">Safe Rides, Every Time.</strong><br><br>
+                    <p style="color: #4a5f76; font-size: 18px; line-height: 1.6; font-weight: 500; margin: 0;">
+                        At GoRide, the well-being of our customers is above everything else.<br> We are constantly in 
+                        pursuit of enhancing our safety measures to<br> ensure every GoRide ride is a pleasant and comfortable
+                        experience.<br> GoRide prioritizes your well-being above all else. We are constantly<br> working to enhance
+                        our safety measures, so every GoRide ride is<br> pleasant and comfortable.
+                    </p>
+            </p>
+        </div>
+        <img src="https://media.istockphoto.com/id/1007795092/vector/car-accident-icon-vector-icon-simple-element-illustration-car-accident-symbol-design-can-be.jpg?s=612x612&w=0&k=20&c=A3Gb5unVY4Mx93fbF9ZNKiZ6skCVHnhVCqzABXm-NtM=" alt="image" style="height: 300px; margin-left: 20px;">
+    </div>
+
+    <!--GoRide for everyone  -->
+    <div style="font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #fff; color: #333;">
+
+        <div style="max-width: 100%; margin: 40px auto; padding: 20px; text-align: center;">
+            <h2 style="font-size: 28px; font-weight: 600; margin-bottom: 30px; color: #222;">There's Our GoRide for everyone</h2>
+    
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px;">
+    
+                <!-- First Option -->
+                <div style="flex: 1; min-width: 280px; max-width: 350px; background: white; padding: 20px; border-radius: 12px; 
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; transition: transform 0.3s ease-in-out, 
+                            box-shadow 0.3s ease-in-out;">
+                    <img src="https://images.yourstory.com/cs/2/d99b1110116911ed9e63f54395117598/Rapido-04-1705071387363.png" alt="Any Budget" style="max-width: 100%; height: 200px; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="font-size: 20px; font-weight: 600; margin-bottom: 10px; color: #222;">For any budget</div>
+                    <p style="font-size: 15px; line-height: 1.6; color: #555;">Your ride, your way. Choose from Bikes, Autos, Prime Sedans, and Prime SUVs to find the perfect vehicle for your budget.</p>
+                </div>
+    
+                <!-- Second Option -->
+                <div style="flex: 1; min-width: 280px; max-width: 350px; background: white; padding: 20px; border-radius: 12px; 
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; transition: transform 0.3s ease-in-out, 
+                            box-shadow 0.3s ease-in-out;">
+                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/businessman-booking-online-taxi-service-illustration-download-in-svg-png-gif-file-formats--call-order-book-cab-services-pack-vehicle-illustrations-4246738.png" alt="Any Distance" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="font-size: 20px; font-weight: 600; margin-bottom: 10px; color: #222;">For any distance</div>
+                    <p style="font-size: 15px; line-height: 1.6; color: #555;">Need a ride across town or a trip out of town? Book a Daily ride within the city or explore beyond with Outstation.</p>
+                </div>
+    
+                <!-- Third Option -->
+                <div style="flex: 1; min-width: 280px; max-width: 350px; background: white; padding: 20px; border-radius: 12px; 
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); text-align: center; transition: transform 0.3s ease-in-out, 
+                            box-shadow 0.3s ease-in-out;">
+                    <img src="https://static.vecteezy.com/system/resources/previews/005/238/726/non_2x/online-application-for-call-taxi-service-by-smart-phone-and-set-location-for-destination-free-vector.jpg" alt="Any Duration" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="font-size: 20px; font-weight: 600; margin-bottom: 10px; color: #222;">For any duration</div>
+                    <p style="font-size: 15px; line-height: 1.6; color: #555;">Need a ride? don't worry our GoRide offers Daily, Outstation, and hourly Rental packages for any budget or duration. </p>
+                </div>
+    
+            </div>
+        </div>
+    
+    </div>
+   
+    <!-- apps -->
+    <div style="font-family: sans-serif; margin: 0; padding: 0; background-color: #fff; display: flex; flex-direction: column; align-items: center; width: 100%; height: 100vh; justify-content: center;">
+
+        <div style="max-width: 100%; text-align: center; padding: 40px; background-color: white;">
+            <h2 style="margin-bottom: 30px; color: #333; font-size: 24px;">Download our apps to get the best experience</h2>
+            
+            <div style="display: flex; justify-content: center; gap: 60px; width: 100%; padding: 20px;">
+                
+                <div style="border: 1px solid #ddd; padding: 25px; border-radius: 12px; text-align: center; flex: 1; max-width: 350px; display: flex; flex-direction: column; background: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                    <img src="images/Goride.png" alt="GoRide App" style="width: 100px; height: 100px; margin-bottom: 15px; border-radius: 50%; border: 4px solid #ddd;">
+                    <div style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">GoRide</div>
+                    <div style="font-size: 14px; color: #666; flex-grow: 1;">Book cabs, buy insurance, access GoRide Money and much more</div>
+                    <a href="#" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 6px; font-size: 14px;">Download →</a>
+                </div>
+    
+                <div style="border: 1px solid #ddd; padding: 25px; border-radius: 12px; text-align: center; flex: 1; max-width: 350px; display: flex; flex-direction: column; background: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                    <img src="images/Goride.png" alt="GoRide Driver App" style="width: 100px; height: 100px; margin-bottom: 15px; border-radius: 50%; border: 4px solid #ddd;">
+                    <div style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">GoRide Driver</div>
+                    <div style="font-size: 14px; color: #666; flex-grow: 1;">Register as a driver to take rides, see your earnings and incentives</div>
+                    <!-- <div style="font-size: 12px; font-weight: bold; color: red; margin-top: 5px;">DRIVER</div> -->
+                    <a href="#" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 6px; font-size: 14px;">Download →</a>
+                </div>
+    
+            </div>
+        </div>
+    
+    </div>
+    
+    <!-- FAQ -->
+    <div style="font-family: Arial, sans-serif; background-color: #fff; margin: 20px;">
+        <div style="width: 80%; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center;">Frequently Asked Questions</h2>
+            
+            <div style="border-bottom: 1px solid #ddd; padding: 15px 0; cursor: pointer;" onclick="toggleAnswer(1)">
+                <div style="font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; transition: color 0.3s ease-in-out;">Can I have a lost item delivered to me? <span id="arrow1" style="transition: transform 0.3s ease-in-out; width: 20px;">&#9660;</span></div>
+                <div id="answer1" style="font-size: 16px; color: #555; margin-top: 10px; display: none;">Unfortunately, GoRide doesn't offer a service to deliver lost items. You can contact your driver through the app to arrange a pickup.</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #ddd; padding: 15px 0; cursor: pointer;" onclick="toggleAnswer(2)">
+                <div style="font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">Can I rent a car using GoRide? <span id="arrow2" style="transition: transform 0.3s ease-in-out; width: 20px;">&#9660;</span></div>
+                <div id="answer2" style="font-size: 16px; color: #555; margin-top: 10px; display: none;">GoRide doesn't directly offer car rentals. However, they may partner with rental services in some locations.</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #ddd; padding: 15px 0; cursor: pointer;" onclick="toggleAnswer(3)">
+                <div style="font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">Can I request a ride that picks up friends in different locations? <span id="arrow3" style="transition: transform 0.3s ease-in-out; width: 20px;">&#9660;</span></div>
+                <div id="answer3" style="font-size: 16px; color: #555; margin-top: 10px; display: none;">You can add multiple destinations to your ride before you request it, to pick up friends at different locations.</div>
+            </div>
+            
+            <div style="border-bottom: 1px solid #ddd; padding: 15px 0; cursor: pointer;" onclick="toggleAnswer(4)">
+                <div style="font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">Can I request a taxi on GoRide? <span id="arrow4" style="transition: transform 0.3s ease-in-out; width: 20px;">&#9660;</span></div>
+                <div id="answer4" style="font-size: 16px; color: #555; margin-top: 10px; display: none;">In some cities, GoRide offers a taxi option, allowing you to request a traditional taxi through the GoRide app.</div>
+            </div>
+            
+            <div style="padding: 15px 0; cursor: pointer;" onclick="toggleAnswer(5)">
+                <div style="font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">Is there a GoRide ride option for 5 people? <span id="arrow5" style="transition: transform 0.3s ease-in-out; width: 20px;">&#9660;</span></div>
+                <div id="answer5" style="font-size: 16px; color: #555; margin-top: 10px; display: none;">Yes, GoRide offers options like GoRideXL or GoRideSUV that can accommodate 5 passengers. Be sure to select the appropriate option when requesting your ride.</div>
+            </div>
+        </div>
+    
+        <script>
+            function toggleAnswer(id) {
+                const answer = document.getElementById(`answer${id}`);
+                const arrow = document.getElementById(`arrow${id}`);
+                
+                if (answer.style.display === "none" || answer.style.display === "") {
+                    answer.style.display = "block";
+                    arrow.style.transform = "rotate(180deg)";
+                } else {
+                    answer.style.display = "none";
+                    arrow.style.transform = "rotate(0deg)";
+                }
+            }
+        </script>
+    </div>
+
+    <!-- footer -->
+    <footer style="background-color: #000; color: #fff; padding: 40px 20px; font-family: Arial, sans-serif;">
+        <div class="container" style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1100px; margin: 0 auto;">
+            <div class="column" style="width: 22%; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Company</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Our offerings</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Newsroom</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Investors</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Blog</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Careers</a></li>
+                </ul>
+            </div>
+            
+            <div class="column" style="width: 22%; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Products</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Ride</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Drive</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Deliver</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Eat</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">GoRide for Business</a></li>
+                </ul>
+            </div>
+            
+            <div class="column" style="width: 22%; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Global Citizenship</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Safety</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Diversity and Inclusion</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Sustainability</a></li>
+                </ul>
+            </div>
+            
+            <div class="column" style="width: 22%; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin-bottom: 15px;">Travel</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Reserve</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Airports</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Cities</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="display: flex; margin-left: 50px; gap: 180px;">
+            <div class="social" style="text-align: center; margin-top: 20px;">
+                <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-youtube"></i></a>
+                <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-linkedin"></i></a>
+                <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+            </div>
+    
+            <div class="legal" style="text-align: center; margin-top: 20px;">
+                <p style="margin: 0;">&copy; 2025 GoRide Technologies Inc.</p>
+                <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Privacy</a>
+                <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Accessibility</a>
+                <a href="#" style="color: #fff; text-decoration: none;">Terms</a>
+            </div>
+        </div>
+    </footer>
+    
+
+</body>
+</html>

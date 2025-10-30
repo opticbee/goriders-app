@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Go Ride</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 50px auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #ffce00;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        
+        .team-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-10px);
+        }
+    </style>
+</head>
+<body style="font-family: sans-serif; margin: 0; padding: 0; background-color: #fff; max-width: 100%;">
+
+<!-- Navbar -->
+<nav style="background-color: rgb(242, 237, 216); padding: 20px; position: sticky; top: 0; z-index: 1000;">
+    
+
+    <!-- Menu Items -->
+    <div id="nav-items" style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 20px;">
+        
+        <!-- Header Row -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <!-- Logo + Title -->
+        <div style="display: flex; align-items: center;">
+            <a href="index.html">
+                <img src="images/Goride.png" alt="GoRide Logo" style="height: 50px; margin-right: 10px;">
+            </a>
+            <a href="index.html" style="text-decoration: none; color: #000; font-weight: bold; font-size: 1.8em;">GoRide</a>
+        </div>
+
+        <!-- Hamburger Icon -->
+        <div id="hamburger" onclick="toggleMenu()" style="font-size: 28px; cursor: pointer; display: none;">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+        
+        <!-- Search Bar -->
+        <div style="display: flex; align-items: center; background-color: #f0f0f0; padding: 8px 12px; border-radius: 5px;">
+            <input type="text" placeholder="Search..." style="border: none; outline: none; background: transparent; padding: 5px;">
+            <i class="fas fa-search" style="color: #555; cursor: pointer;"></i>
+        </div>
+
+        <!-- Role Buttons -->
+        <div style="display: flex; gap: 10px;">
+            <a href="login.html" style="background-color: #000; color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: 500;">Rider</a>
+            <a href="driverlogin.html" style="background-color: #000; color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: 500;">Driver</a>
+            <a href="admin.html" style="background-color: #000; color: #fff; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: 500;">Admin</a>
+        </div>
+
+        <!-- Nav Links -->
+        <div style="display: flex; gap: 20px;">
+            <a href="about.html" style="text-decoration: none; color: #333; font-weight: 500;">About Us</a>
+            <a href="contact.html" style="text-decoration: none; color: #333; font-weight: 500;">Contact Us</a>
+        </div>
+
+        <!-- Social Icons -->
+        <div style="display: flex; gap: 15px;">
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-twitter"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-instagram"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-youtube"></i></a>
+            <a href="#" style="text-decoration: none; color: #333; font-size: 20px;"><i class="fab fa-telegram"></i></a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <h1 style="font-size: 3.5rem; margin-bottom: 20px;">GoRide Story</h1>
+    <p style="font-size: 1.5rem; max-width: 800px; margin: 0 auto;">Revolutionizing urban mobility one ride at a time</p>
+</div>
+
+<!-- Our Mission -->
+<div style="padding: 80px 20px; text-align: center; background-color: #f8f8f8;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 30px; color: #333;">Our Mission</h2>
+        <p style="font-size: 1.2rem; line-height: 1.6; color: #555;">
+            At GoRide, we're on a mission to transform urban transportation by making it affordable, 
+            reliable, and accessible to everyone. We believe that getting around your city should be 
+            as simple as tapping a button, without the hassles of traditional transportation methods.
+        </p>
+    </div>
+</div>
+
+<!-- Our Journey -->
+<div style="padding: 80px 20px; background-color: white;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: #333;">Our Journey</h2>
+        
+        <div class="timeline">
+            <div style="padding: 10px 40px; position: relative; width: 50%; left: 0;">
+                <div style="padding: 20px 30px; background-color: white; position: relative; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h3 style="color: #ffce00;">2025</h3>
+                    <p>Founded in Hyderabad with just 10 bikes and a big dream to solve urban mobility challenges</p>
+                </div>
+            </div>
+            
+            <div style="padding: 10px 40px; position: relative; width: 50%; left: 50%;">
+                <div style="padding: 20px 30px; background-color: white; position: relative; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h3 style="color: #ffce00;">2025</h3>
+                    <p>Expanded to 10 cities across India and launched our auto-rickshaw service</p>
+                </div>
+            </div>
+            
+            <div style="padding: 10px 40px; position: relative; width: 50%; left: 0;">
+                <div style="padding: 20px 30px; background-color: white; position: relative; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h3 style="color: #ffce00;">2026</h3>
+                    <p>Introduced cab services and reached 1 million rides per day milestone</p>
+                </div>
+            </div>
+            
+            <div style="padding: 10px 40px; position: relative; width: 50%; left: 50%;">
+                <div style="padding: 20px 30px; background-color: white; position: relative; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h3 style="color: #ffce00;">2026</h3>
+                    <p>Launched in 150+ cities with over 1 million driver partners</p>
+                </div>
+            </div>
+            
+            <div style="padding: 10px 40px; position: relative; width: 50%; left: 0;">
+                <div style="padding: 20px 30px; background-color: white; position: relative; border-radius: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h3 style="color: #ffce00;">Today</h3>
+                    <p>Serving 25M+ customers with 100M+ rides completed across India</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Technology -->
+<div style="padding: 80px 20px; background-color: white;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: #333;">Our Technology</h2>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center;">
+            <div style="flex: 1; min-width: 300px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png" alt="GoRide Technology" style="width: 100%; max-width: 400px;">
+            </div>
+            
+            <div style="flex: 1; min-width: 300px;">
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #333; font-size: 1.5rem; display: flex; align-items: center;">
+                        <span style="background: #ffce00; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px;">1</span>
+                        Smart Matching Algorithm
+                    </h3>
+                    <p style="color: #555; margin-left: 45px;">Our proprietary system matches riders with the nearest available driver in seconds</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #333; font-size: 1.5rem; display: flex; align-items: center;">
+                        <span style="background: #ffce00; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px;">2</span>
+                        Real-Time Tracking
+                    </h3>
+                    <p style="color: #555; margin-left: 45px;">Advanced GPS technology provides accurate ETAs and live ride tracking</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #333; font-size: 1.5rem; display: flex; align-items: center;">
+                        <span style="background: #ffce00; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 15px;">3</span>
+                        AI-Powered Safety
+                    </h3>
+                    <p style="color: #555; margin-left: 45px;">Machine learning monitors every ride for unusual patterns and potential risks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Awards -->
+<div style="padding: 80px 20px; background-color: #f8f8f8;">
+    <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 50px; color: #333;">Awards & Recognition</h2>
+        
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 200px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Award" style="width: 60px; height: 60px; margin-bottom: 15px;">
+                <h3 style="color: #333; margin: 0;">Best Startup</h3>
+                <p style="color: #555; font-size: 0.9rem;">India Today Awards 2023</p>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 200px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Award" style="width: 60px; height: 60px; margin-bottom: 15px;">
+                <h3 style="color: #333; margin: 0;">Green Initiative</h3>
+                <p style="color: #555; font-size: 0.9rem;">ET Sustainability Awards 2022</p>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 200px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Award" style="width: 60px; height: 60px; margin-bottom: 15px;">
+                <h3 style="color: #333; margin: 0;">Top Employer</h3>
+                <p style="color: #555; font-size: 0.9rem;">LinkedIn Top Startups 2021</p>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 200px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2583/2583344.png" alt="Award" style="width: 60px; height: 60px; margin-bottom: 15px;">
+                <h3 style="color: #333; margin: 0;">Innovation Award</h3>
+                <p style="color: #555; font-size: 0.9rem;">Tech Mahindra Foundation 2020</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 50px;">
+            <a href="press.html" style="background-color: #000; color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;">
+                View Press Coverage <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Our Impact -->
+<div style="padding: 80px 20px; background-color: #f8f8f8;">
+    <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 30px; color: #333;">Transforming Urban Mobility</h2>
+        
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 40px;">
+            <div style="flex: 1; min-width: 250px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <i class="fas fa-traffic" style="font-size: 2.5rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="color: #333;">Reduced Traffic</h3>
+                <p style="color: #555;">By enabling shared rides, we've helped remove over 500,000 private vehicles from roads</p>
+            </div>
+            
+            <div style="flex: 1; min-width: 250px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <i class="fas fa-leaf" style="font-size: 2.5rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="color: #333;">Eco-Friendly</h3>
+                <p style="color: #555;">Our electric vehicle fleet has prevented 2M+ kg of CO2 emissions annually</p>
+            </div>
+            
+            <div style="flex: 1; min-width: 250px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <i class="fas fa-briefcase" style="font-size: 2.5rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="color: #333;">Economic Growth</h3>
+                <p style="color: #555;">Created livelihood opportunities for 1M+ driver partners across India</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 50px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 800px; margin-left: auto; margin-right: auto;">
+            <p style="font-size: 1.2rem; line-height: 1.6; color: #555;">
+                "GoRide has revolutionized how India moves. By combining cutting-edge technology with 
+                sustainable transportation solutions, we're building the future of urban mobility - 
+                one that's efficient, affordable, and environmentally responsible."
+            </p>
+            <p style="font-weight: bold; margin-top: 20px;">- Rajesh Kumar, Founder & CEO</p>
+        </div>
+    </div>
+</div>
+
+<!-- Leadership Team -->
+<div style="padding: 80px 20px; background-color: #f8f8f8;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: #333;">Meet Our Leadership</h2>
+        
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+            <div class="team-card" style="width: 280px;">
+                <img src="https://i.pinimg.com/736x/d4/2a/9f/d42a9fffa0c22f3365817958ce5ea120.jpg" alt="CEO" style="width: 100%; height: 250px; object-fit: cover;">
+                <div style="padding: 20px;">
+                    <h3 style="margin: 0 0 5px 0;">Param Gadi</h3>
+                    <p style="color: #ffce00; margin: 0 0 10px 0;">Founder & CEO</p>
+                    <p style="color: #555;">Visionary leader who started GoRide from his garage</p>
+                </div>
+            </div>
+            
+            <div class="team-card" style="width: 280px;">
+                <img src="images/NaveenTeja.jpg" alt="CTO" style="width: 100%; height: 250px; object-fit: cover;">
+                <div style="padding: 20px;">
+                    <h3 style="margin: 0 0 5px 0;">Naveen Teja</h3>
+                    <p style="color: #ffce00; margin: 0 0 10px 0;">Chief Technology Officer</p>
+                    <p style="color: #555;">Built the technology platform that powers millions of rides</p>
+                </div>
+            </div>
+            
+            <div class="team-card" style="width: 280px;">
+                <img src="https://m.media-amazon.com/images/M/MV5BOGJkMzRiYmQtOTVjNy00MWU3LTg5YjctNjcwMmZlNGIwMjhmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="COO" style="width: 100%; height: 250px; object-fit: cover;">
+                <div style="padding: 20px;">
+                    <h3 style="margin: 0 0 5px 0;">Ganapathi Vuta</h3>
+                    <p style="color: #ffce00; margin: 0 0 10px 0;">Chief Operations Officer</p>
+                    <p style="color: #555;">Ensures seamless operations across all our cities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Values -->
+<div style="padding: 80px 20px; background-color: white;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: #333;">Our Values</h2>
+        
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+            <div style="flex: 1; min-width: 250px; text-align: center; padding: 30px 20px; border-radius: 10px; background-color: #f8f8f8;">
+                <i class="fas fa-shield-alt" style="font-size: 3rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 15px 0;">Safety First</h3>
+                <p style="color: #555;">Your safety is our top priority, with verified drivers and 24/7 support</p>
+            </div>
+            
+            <div style="flex: 1; min-width: 250px; text-align: center; padding: 30px 20px; border-radius: 10px; background-color: #f8f8f8;">
+                <i class="fas fa-hand-holding-heart" style="font-size: 3rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 15px 0;">Customer Obsession</h3>
+                <p style="color: #555;">We go above and beyond to deliver exceptional experiences</p>
+            </div>
+            
+            <div style="flex: 1; min-width: 250px; text-align: center; padding: 30px 20px; border-radius: 10px; background-color: #f8f8f8;">
+                <i class="fas fa-lightbulb" style="font-size: 3rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 15px 0;">Innovation</h3>
+                <p style="color: #555;">Constantly pushing boundaries to improve urban mobility</p>
+            </div>
+            
+            <div style="flex: 1; min-width: 250px; text-align: center; padding: 30px 20px; border-radius: 10px; background-color: #f8f8f8;">
+                <i class="fas fa-users" style="font-size: 3rem; color: #ffce00; margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 15px 0;">Community</h3>
+                <p style="color: #555;">Building opportunities for drivers and better mobility for riders</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer (same as index.html) -->
+<footer style="background-color: #000; color: #fff; padding: 40px 20px; font-family: Arial, sans-serif;">
+    <div class="container" style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1100px; margin: 0 auto;">
+        <div class="column" style="width: 22%; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Company</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Our offerings</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Newsroom</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Investors</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Blog</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Careers</a></li>
+            </ul>
+        </div>
+        
+        <div class="column" style="width: 22%; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Products</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Ride</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Drive</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Deliver</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Eat</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">GoRide for Business</a></li>
+            </ul>
+        </div>
+        
+        <div class="column" style="width: 22%; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Global Citizenship</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Safety</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Diversity and Inclusion</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Sustainability</a></li>
+            </ul>
+        </div>
+        
+        <div class="column" style="width: 22%; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Travel</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Reserve</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Airports</a></li>
+                <li style="margin-bottom: 10px;"><a href="#" style="color: #fff; text-decoration: none;">Cities</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="display: flex; margin-left: 50px; gap: 180px;">
+        <div class="social" style="text-align: center; margin-top: 20px;">
+            <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-facebook"></i></a>
+            <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-twitter"></i></a>
+            <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-youtube"></i></a>
+            <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-linkedin"></i></a>
+            <a href="#" style="color: #fff; font-size: 24px; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+        </div>
+
+        <div class="legal" style="text-align: center; margin-top: 20px;">
+            <p style="margin: 0;">&copy; 2025 GoRide Technologies Inc.</p>
+            <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Privacy</a>
+            <a href="#" style="color: #fff; text-decoration: none; margin-right: 15px;">Accessibility</a>
+            <a href="#" style="color: #fff; text-decoration: none;">Terms</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoRide Driver</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+      /* Add space for bottom nav on mobile */
+      padding-bottom: 0; 
+    }
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px 0;
+    }
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-menu {
+      padding: 20px 0;
+    }
+    .menu-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+    }
+    .menu-item:hover, .menu-item.active {
+      background-color: rgba(255,255,255,0.1);
+    }
+    .menu-item i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .profile-info {
+      display: flex;
+      align-items: center;
+    }
+    .profile-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      margin-top: 0;
+      color: #2c3e50;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    .status-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    /* Custom toggle switch style */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2ecc71;
+    }
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2ecc71;
+    }
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    .status-text {
+      font-weight: bold;
+    }
+    .online {
+      color: #2ecc71;
+    }
+    .offline {
+      color: #e74c3c;
+    }
+    .btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+    .btn-success {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .btn-danger {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .divider {
+      border-top: 1px solid #ddd;
+      margin: 20px 0;
+    }
+    .ride-requests {
+      font-weight: bold;
+    }
+    .location-info {
+      margin-top: 15px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .location-info span {
+      font-weight: bold;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .otp-input {
+      padding: 10px;
+      width: 100px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      text-align: center;
+    }
+    .toast-notification {
+        position: fixed;
+        bottom: 80px; /* Adjusted position for bottom nav */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        z-index: 1001;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .toast-notification.show {
+        opacity: 1;
+    }
+    .status-text.on-ride {
+        color: #f39c12;
+    }
+    #rideRequestModal .modal-content {
+        max-width: 500px;
+        text-align: left;
+    }
+    #ride-request-details p {
+        margin: 8px 0;
+        display: flex;
+    }
+    #ride-request-details p strong {
+        min-width: 120px;
+        display: inline-block;
+    }
+    #map-container {
+      height: 300px; /* Set a fixed height for the map */
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    /* --- MOBILE RESPONSIVENESS AND BOTTOM NAV STYLES --- */
+    .bottom-nav {
+      display: none; /* Hidden by default, shown in media query */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: white;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 900;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #7f8c8d; /* Default icon color */
+      font-size: 10px;
+      padding: 5px;
+      flex-grow: 1;
+      text-align: center;
+      transition: color 0.2s;
+      user-select: none;
+    }
+    .nav-item i {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+    }
+    .nav-item.active {
+      color: #3498db; /* Active color */
+    }
+    .nav-item:hover {
+      color: #2c3e50;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        display: block; /* Stack vertically */
+        padding-bottom: 60px; /* Space for fixed bottom nav */
+      }
+      .sidebar {
+        display: none; /* Hide sidebar on small screens */
+      }
+      .main-content {
+        padding: 10px;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .profile-info {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .bottom-nav {
+        display: flex; /* Show bottom nav */
+      }
+      .card {
+        margin-bottom: 10px; /* Less space between cards on mobile */
+      }
+    }
+  </style>
+  <!-- Load Google Maps API Script -->
+  <script>
+    // CRITICAL: Replace YOUR_GOOGLE_MAPS_API_KEY with the actual key from your .env file
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyDqW6tsp_sUG5-Xf6aXFzYuqrvRiGehGXg'; 
+
+    if (GOOGLE_MAPS_API_KEY && GOOGLE_MAPS_API_KEY !== 'YOUR_GOOGLE_MAPS_API_KEY') {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly`;
+        script.async = true;
+        document.head.appendChild(script);
+    } else {
+        console.error("Google Maps API Key missing. Map functionality disabled.");
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar (Desktop Navigation) -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>GoRide Driver</h2>
+        <p>Welcome back, <span id="driver-name">Loading...</span></p>
+      </div>
+      <div class="sidebar-menu">
+        <div id="sidebar-dashboard" class="menu-item active" onclick="showSection('dashboard')">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </div>
+        <div id="sidebar-current-ride" class="menu-item" onclick="showSection('current-ride')">
+          <i class="fas fa-car"></i>
+          <span>Current Ride</span>
+        </div>
+        <div id="sidebar-ride-history" class="menu-item" onclick="showSection('ride-history')">
+          <i class="fas fa-history"></i>
+          <span>Ride History</span>
+        </div>
+        <div id="sidebar-earnings" class="menu-item" onclick="showSection('earnings')">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Earnings</span>
+        </div>
+        <div id="sidebar-profile" class="menu-item" onclick="showSection('profile')">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </div>
+        <div id="sidebar-logout" class="menu-item" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <h2 id="section-title">Driver Dashboard</h2>
+        <div class="profile-info">
+          <!-- FIX: Replaced unreliable placeholder URL with a stable one -->
+          <img id="profile-img" src="https://placehold.co/150x150/2c3e50/ffffff?text=D" alt="Driver" class="profile-img">
+          <div>
+            <div id="uuid">ID: Loading...</div>
+            <div id="vehicle-info">Vehicle: Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dashboard-section">
+        <div class="card">
+          <div class="status-toggle">
+            <span class="status-text">Status: <span id="status-indicator" class="offline">Offline</span></span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="online-toggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="location-info">
+            <span>Current Location (Address):</span> <span id="liveLocation">Offline - Location not available</span>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Available Ride Requests</h3>
+          <div id="ride-requests">
+            <p>No ride requests available at the moment.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="current-ride-section" style="display: none;">
+        <div class="card">
+          <h3 class="card-title">Current Ride Details</h3>
+          <div id="current-ride-details">
+            <p>No active ride at the moment.</p>
+          </div>
+          <div id="otp-section" style="display: none;">
+            <p>Enter OTP to start the ride:</p>
+            <p>OTP: <span id="ride-otp"></span></p>
+            <input type="text" id="otp-input" class="otp-input" placeholder="Enter OTP" maxlength="4">
+            <button class="btn btn-success" onclick="verifyOTP()">Verify OTP</button>
+            <button class="btn btn-danger" onclick="completeRide()">Complete Ride</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="ride-history-section" style="display: none;">
+        <div class="card">
+          <h3 class="card-title">Your Ride History</h3>
+          <div id="history-list">
+            <p>No ride history available.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="earnings-section" style="display: none;">
+        <div class="card">
+          <h3 class="card-title">Earnings Summary</h3>
+          <div id="earnings-summary">
+            <p>Loading earnings data...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Updated Profile Section with Map -->
+      <div id="profile-section" style="display: none;">
+        <div class="card">
+          <h3 class="card-title">Your Profile</h3>
+          <div id="profile-details">
+            <p>Loading profile data...</p>
+          </div>
+          <h3 class="card-title" style="margin-top: 20px;">Live Location Map</h3>
+          <div id="map-container">
+             <p class="text-center pt-8 text-gray-500">Map loading... Go online to see your live location.</p>
+          </div>
+          <p class="mt-4 text-xs text-gray-500">Note: This map updates when you are Online and actively sharing location.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar (Mobile) -->
+  <div id="bottom-nav" class="bottom-nav">
+    <div id="nav-dashboard" class="nav-item active" onclick="showSection('dashboard')">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </div>
+    <div id="nav-current-ride" class="nav-item" onclick="showSection('current-ride')">
+      <i class="fas fa-car"></i>
+      <span>Ride</span>
+    </div>
+    <div id="nav-ride-history" class="nav-item" onclick="showSection('ride-history')">
+      <i class="fas fa-history"></i>
+      <span>History</span>
+    </div>
+    <div id="nav-earnings" class="nav-item" onclick="showSection('earnings')">
+      <i class="fas fa-money-bill-wave"></i>
+      <span>Earnings</span>
+    </div>
+    <div id="nav-profile" class="nav-item" onclick="showSection('profile')">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </div>
+    <div id="nav-logout" class="nav-item" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </div>
+  </div>
+
+  <div id="rideRequestModal" class="modal">
+    <div class="modal-content">
+      <h3>New Ride Request</h3>
+      <div id="ride-request-details">
+        <p><strong>Pickup:</strong> <span id="request-pickup"></span></p>
+        <p><strong>Dropoff:</strong> <span id="request-dropoff"></span></p>
+        <p><strong>Distance:</strong> <span id="request-distance"></span> km</p>
+        <p><strong>Estimated Time:</strong> <span id="request-time"></span> mins</p>
+        <p><strong>Vehicle Type:</strong> <span id="request-vehicle"></span></p>
+        <div id="request-timer" style="color: #e74c3c; font-weight: bold; margin: 10px 0;"></div>
+      </div>
+      <button class="btn btn-success" onclick="acceptRide()">Accept Ride</button>
+      <button class="btn btn-danger" onclick="declineRide()">Decline</button>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Modal to replace confirm() -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3 style="color: #2c3e50;">Confirm Logout</h3>
+      <p style="margin: 15px 0; color: #555;">Are you sure you want to log out and go offline?</p>
+      <button class="btn btn-primary" onclick="executeLogout()" style="margin-right: 10px;">Yes, Logout</button>
+      <button class="btn btn-danger" onclick="closeLogoutModal()">Cancel</button>
+    </div>
+  </div>
+
+<script>
+    // CRITICAL FIX: Hardcode the external domain for Capacitor/Android to ensure API calls work.
+    // The previous logic failed because window.location.origin is likely 'capacitor://localhost' in the app.
+    const API_BASE = 'https://goriders.in'; 
+
+    const driverId = localStorage.getItem('driverId'); 
+    const driverToken = localStorage.getItem('driverToken'); 
+    
+    let watchId = null;
+    let currentBookingId = null;
+    let currentOTP = null;
+    let ws = null;
+    let currentRideRequest = null;
+    let notificationSound = new Audio('https://s3.eu-central-1.amazonaws.com/sounds-for-youtube/notification.mp3'); 
+    
+    // Google Maps objects
+    let map;
+    let marker;
+
+    // Google Maps initialization function (called by Google Maps script loader)
+    function initMap() {
+        const defaultPos = { lat: 28.7041, lng: 77.1025 };
+        map = new google.maps.Map(document.getElementById("map-container"), {
+            center: defaultPos,
+            zoom: 12,
+        });
+        marker = new google.maps.Marker({
+            position: defaultPos,
+            map: map,
+            title: "Your Location",
+            icon: {
+                url: "http://maps.google.com/mapfiles/ms/icons/truck.png", // A simple car/truck icon
+            }
+        });
+        document.getElementById('map-container').innerHTML = ''; 
+    }
+
+    // Helper function to create authorization headers (CRITICAL FOR PROFILE FETCH)
+    function getAuthHeaders(contentType = 'application/json') {
+        const headers = { 'Content-Type': contentType };
+        // This is where the JWT token is used for authorization
+        if (driverToken) {
+            headers['Authorization'] = `Bearer ${driverToken}`;
+        }
+        return headers;
+    }
+
+
+    if (!driverId || !driverToken) { 
+        window.location.href = "driverlogin.html";
+        throw new Error("Missing credentials. Redirecting."); 
+    } else {
+        function connectWebSocket() {
+            // **IMPORTANT**: You must use the fixed API_BASE here, not window.location.host, 
+            // if the server requires a specific public domain for WebSocket security.
+            const wsProtocol = API_BASE.startsWith('https') ? 'wss:' : 'ws:';
+            const wsHost = API_BASE.replace(/https?:\/\//, '');
+
+            ws = new WebSocket(`${wsProtocol}//${wsHost}/api/ride/ws`); 
+            
+            ws.onopen = () => {
+                ws.send(JSON.stringify({
+                    type: 'register_driver',
+                    driverId,
+                    driverToken, // Send token for server-side WS auth
+                    vehicleType: 'cab' 
+                }));
+                console.log('Driver WS connected.');
+            };
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'ride_request') {
+                        currentRideRequest = data.request;
+                        document.getElementById('rideRequestModal').style.display = 'flex';
+                        document.getElementById('request-pickup').textContent = data.request.pickup;
+                        document.getElementById('request-dropoff').textContent = data.request.dropoff;
+                        document.getElementById('request-distance').textContent = data.request.distance.toFixed(2);
+                        document.getElementById('request-time').textContent = data.request.estimatedTime;
+                        document.getElementById('request-vehicle').textContent = data.request.vehicleType;
+                        notificationSound.play();
+                    }
+                    if (data.type === 'ride_accepted_by_other') {
+                        showMessage('This ride has been accepted by another driver.', 'info');
+                        document.getElementById('rideRequestModal').style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('WebSocket message error:', error);
+                }
+            };
+            ws.onclose = () => {
+                console.log('Driver WS disconnected. Reconnecting...');
+                setTimeout(() => connectWebSocket(), 5000);
+            };
+            ws.onerror = (error) => console.error('WebSocket error:', error);
+        }
+        connectWebSocket();
+    }
+    
+    // FETCH DRIVER PROFILE (CRITICAL SECTION)
+    fetch(`${API_BASE}/api/driver/profile`, {
+        // Must include the Authentication header (using JWT/Token)
+        headers: getAuthHeaders() 
+    })
+    .then(async res => {
+        if (res.status === 401 || res.status === 403) {
+            // Token invalid or expired, force logout
+            executeLogout(true);
+            throw new Error(`Authentication Failed. Status: ${res.status}`);
+        }
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+    })
+    .then(data => {
+        // Profile successfully loaded - Update UI
+        document.getElementById('driver-name').textContent = data.fullname || 'Driver';
+        document.getElementById('uuid').textContent = `ID: ${data.uuid || 'N/A'}`;
+        document.getElementById('vehicle-info').textContent = `Vehicle: ${data.vehicle || 'N/A'}`;
+        
+        // Use uploaded image path or fallback placeholder
+        if (data.image) {
+          // Assuming uploaded images are served from root (e.g., /uploads/...)
+          document.getElementById('profile-img').src = data.image.startsWith('uploads/') ? `/${data.image}` : data.image; 
+        } else {
+          document.getElementById('profile-img').src = 'https://placehold.co/150x150/2c3e50/ffffff?text=D';
+        }
+
+        document.getElementById('profile-details').innerHTML = `
+            <p><strong>Full Name:</strong> ${data.fullname || 'N/A'}</p>
+            <p><strong>Driver ID (UUID):</strong> ${data.uuid || 'N/A'}</p>
+            <p><strong>Vehicle Type:</strong> ${data.vehicle || 'N/A'}</p>
+            <p><strong>Status:</strong> ${data.verification_status || 'Unknown'}</p>
+        `;
+
+        if (data.verification_status !== 'approved') {
+            showMessage(`Account Status: ${data.verification_status.toUpperCase()}. You cannot take rides yet.`, 'info');
+            document.getElementById('online-toggle').disabled = true;
+        }
+
+    })
+    .catch(err => {
+        console.error("Could not fetch driver profile:", err);
+        showMessage("Failed to load profile. Check server status or token validity.", "error");
+        document.getElementById('driver-name').textContent = 'Error loading';
+        document.getElementById('profile-details').textContent = 'Error: Could not retrieve profile data. Check server status.';
+    });
+    
+    // Helper to update the map with new coordinates
+    function updateMap(lat, lng) {
+        if (map && marker) {
+            const newPos = { lat: parseFloat(lat), lng: parseFloat(lng) };
+            marker.setPosition(newPos);
+            map.setCenter(newPos);
+            map.setZoom(16); // Zoom in when location is active
+        }
+    }
+
+
+    function startTrackingLocation() {
+        if (navigator.geolocation) {
+            // Clear the initial message in the map container if map is initialized
+            if (map) document.getElementById('map-container').innerHTML = ''; 
+            
+            watchId = navigator.geolocation.watchPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    
+                    try {
+                        const response = await fetch(`${API_BASE}/api/driver/location`, {
+                            method: 'POST',
+                            headers: getAuthHeaders(), // Use authenticated headers
+                            body: JSON.stringify({
+                                driverId, 
+                                lat: latitude,
+                                lng: longitude,
+                                vehicleType: 'cab', 
+                                status: 'online',
+                                name: document.getElementById('driver-name').textContent
+                            })
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            // Display the full address returned by the backend
+                            document.getElementById('liveLocation').textContent = data.address || `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}`;
+                            updateMap(latitude, longitude);
+                        } else {
+                            console.error('Location update failed on server:', data.message);
+                            showMessage('Location update failed.', 'error');
+                        }
+                    } catch(e) { 
+                        console.error('Location update failed:', e);
+                        showMessage('Network error during location update.', 'error');
+                    }
+                },
+                // Geolocation Error Callback 
+                (error) => {
+                    console.error('Geolocation error:', error);
+                    let errorMessage = 'Geolocation error: Unable to retrieve location.';
+                    if (error.code === error.PERMISSION_DENIED) {
+                        errorMessage = 'Geolocation blocked: Please allow location access in your browser settings.';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        errorMessage = 'Location unavailable: Check device GPS/location settings.';
+                    } else if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+                        errorMessage = 'Geolocation requires HTTPS (or localhost). Location tracking disabled.';
+                    }
+                    showMessage(errorMessage, 'error');
+                    // Stop tracking and force the toggle off on critical failure
+                    document.getElementById('online-toggle').checked = false;
+                    stopTrackingLocation();
+                },
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+            );
+        } else {
+            showMessage("Geolocation is not supported by this browser.", "error");
+        }
+    }
+
+    function stopTrackingLocation() {
+        if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+        document.getElementById('liveLocation').textContent = 'Offline - Location not available';
+        
+        // Reset map view
+        if (marker) {
+            marker.setPosition(null);
+        }
+        document.getElementById('map-container').innerHTML = '<p class="text-center pt-8 text-gray-500">Map loading... Go online to see your live location.</p>';
+
+        // Notify backend of offline status
+        fetch(`${API_BASE}/api/driver/location`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                driverId,
+                lat: 0, // Sending default coords when offline
+                lng: 0,
+                status: 'offline',
+            })
+        }).catch(e => console.error('Offline status update failed:', e));
+    }
+
+    document.getElementById('online-toggle').addEventListener('change', (e) => {
+        const isOnline = e.target.checked;
+        const statusElement = document.getElementById('status-indicator');
+        if (isOnline) {
+            statusElement.textContent = 'Online';
+            statusElement.classList.remove('offline', 'on-ride');
+            statusElement.classList.add('online');
+            startTrackingLocation();
+        } else {
+            statusElement.textContent = 'Offline';
+            statusElement.classList.remove('online', 'on-ride');
+            statusElement.classList.add('offline');
+            stopTrackingLocation();
+        }
+    });
+
+    function showSection(sectionId) {
+        // Hide all main sections
+        document.querySelectorAll('[id$="-section"]').forEach(section => section.style.display = 'none');
+        // Show the requested section
+        document.getElementById(`${sectionId}-section`).style.display = 'block';
+        
+        // Update sidebar active state (for desktop)
+        document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+        const sidebarItem = document.getElementById(`sidebar-${sectionId}`);
+        if(sidebarItem) sidebarItem.classList.add('active');
+
+        // Update bottom nav active state (for mobile)
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        const navItem = document.getElementById(`nav-${sectionId}`);
+        if(navItem) navItem.classList.add('active');
+
+
+        // Update title
+        document.getElementById('section-title').textContent = sectionId.replace('-', ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        
+        // Explicitly resize map when profile section is shown
+        if (sectionId === 'profile' && map) {
+             google.maps.event.trigger(map, 'resize');
+             if (marker && marker.getPosition()) {
+                 map.setCenter(marker.getPosition());
+             } else {
+                 // Center map on default if no location fix yet
+                 map.setCenter({ lat: 28.7041, lng: 77.1025 });
+             }
+        }
+    }
+    
+    function showMessage(message, type = 'info') {
+      const messageBox = document.createElement('div');
+      // Using custom toast styling for background colors
+      let bgColor = '#3498db'; // info
+      if (type === 'success') bgColor = '#2ecc71';
+      if (type === 'error') bgColor = '#e74c3c';
+
+      messageBox.className = 'toast-notification show';
+      messageBox.style.backgroundColor = bgColor;
+      messageBox.textContent = message;
+      document.body.appendChild(messageBox);
+      
+      setTimeout(() => {
+        messageBox.classList.remove('show');
+        messageBox.addEventListener('transitionend', () => messageBox.remove());
+      }, 4000);
+    }
+
+    function logout() {
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    async function executeLogout(isForced = false) {
+        closeLogoutModal();
+        stopTrackingLocation();
+        if (ws) ws.close();
+        localStorage.removeItem('driverId'); 
+        localStorage.removeItem('driverToken'); 
+
+        if (isForced) {
+             showMessage('Your session expired. Please log in again.', 'error');
+             setTimeout(() => window.location.href = 'driverlogin.html', 1500);
+        } else {
+            // Call the backend logout API to clear the cookie (if it exists)
+            try {
+                await fetch(`${API_BASE}/api/driver/logout`, { method: 'POST' });
+            } catch(e) {
+                console.warn('Backend logout failed, session cookie will expire naturally.', e);
+            }
+            window.location.href = 'driverlogin.html';
+        }
+    }
+
+    async function acceptRide() {
+        if (!currentRideRequest) return;
+        try {
+            const response = await fetch(`${API_BASE}/api/ride/accept`, {
+                method: 'POST',
+                headers: getAuthHeaders(), // Use authenticated headers
+                body: JSON.stringify({
+                    driverId,
+                    driverName: document.getElementById('driver-name').textContent,
+                    bookingId: currentRideRequest.bookingId
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                currentBookingId = data.bookingId;
+                currentOTP = data.otp;
+                document.getElementById('rideRequestModal').style.display = 'none';
+                showSection('current-ride');
+                updateCurrentRideDetails();
+            } else {
+                showMessage(data.message || 'Failed to accept ride', 'error');
+            }
+        } catch (error) {
+            console.error('Error accepting ride:', error);
+            showMessage('Failed to accept ride', 'error');
+        }
+    }
+
+    async function declineRide() {
+        if (!currentRideRequest) return;
+        try {
+            const response = await fetch(`${API_BASE}/api/ride/decline`, {
+                method: 'POST',
+                headers: getAuthHeaders(), // Use authenticated headers
+                body: JSON.stringify({
+                    driverId,
+                    bookingId: currentRideRequest.bookingId
+                })
+            });
+            if (response.ok) {
+                document.getElementById('rideRequestModal').style.display = 'none';
+            } else {
+                showMessage('Failed to decline ride', 'error');
+            }
+        } catch (error) {
+            console.error('Error declining ride:', error);
+        }
+    }
+
+    function updateCurrentRideDetails() {
+        if (!currentRideRequest) return;
+        document.getElementById('current-ride-details').innerHTML = `
+            <p><strong>Booking ID:</strong> ${currentRideRequest.bookingId}</p>
+            <p><strong>Pickup:</strong> ${currentRideRequest.pickup}</p>
+            <p><strong>Dropoff:</strong> ${currentRideRequest.dropoff}</p>
+            <p><strong>Distance:</strong> ${currentRideRequest.distance.toFixed(2)} km</p>
+            <p><strong>Estimated Time:</strong> ${currentRideRequest.estimatedTime} mins</p>
+            <p><strong>Vehicle Type:</strong> ${currentRideRequest.vehicleType}</p>
+            <p><strong>Fare:</strong> ₹${(currentRideRequest.distance * 18).toFixed(2)}</p>
+        `;
+        document.getElementById('ride-otp').textContent = currentOTP;
+        document.getElementById('otp-section').style.display = 'block';
+        document.getElementById('status-indicator').textContent = 'On Ride';
+        document.getElementById('status-indicator').classList.remove('online', 'offline');
+        document.getElementById('status-indicator').classList.add('on-ride');
+    }
+
+    async function verifyOTP() {
+        const enteredOTP = document.getElementById('otp-input').value;
+        if (!enteredOTP || enteredOTP !== currentOTP) {
+            showMessage('Invalid OTP', 'error');
+            return;
+        }
+        try {
+            const response = await fetch(`${API_BASE}/api/ride/verify-otp`, {
+                method: 'POST',
+                headers: getAuthHeaders(), // Use authenticated headers
+                body: JSON.stringify({ bookingId: currentBookingId, otp: enteredOTP })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showMessage('OTP verified. Ride started!', 'success');
+                const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(currentRideRequest.pickup)}&destination=${encodeURIComponent(currentRideRequest.dropoff)}&travelmode=driving`;
+                window.open(mapsUrl, "_blank");
+            } else {
+                showMessage(data.message || 'OTP verification failed', 'error');
+            }
+        } catch (error) {
+            console.error('OTP verification error:', error);
+            showMessage('Failed to verify OTP', 'error');
+        }
+    }
+
+    async function completeRide() {
+        if (!currentBookingId) {
+            showMessage('No active ride', 'info');
+            return;
+        }
+        try {
+            const response = await fetch(`${API_BASE}/api/ride/complete`, {
+                method: 'POST',
+                headers: getAuthHeaders(), // Use authenticated headers
+                body: JSON.stringify({ bookingId: currentBookingId, driverId })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showMessage('Ride completed successfully!', 'success');
+                document.getElementById('online-toggle').checked = true;
+                showSection('dashboard');
+                currentBookingId = null;
+                currentOTP = null;
+                currentRideRequest = null;
+                
+                // Manually trigger the online toggle handler to start location tracking again
+                document.getElementById('online-toggle').dispatchEvent(new Event('change'));
+            } else {
+                showMessage(data.message || 'Failed to complete ride', 'error');
+            }
+        } catch (error) {
+            console.error('Error completing ride:', error);
+            showMessage('Failed to complete ride', 'error');
+        }
+    }
+
+    // Initialize the dashboard to show the first section correctly
+    document.addEventListener('DOMContentLoaded', () => {
+        showSection('dashboard');
+    });
+    
+    // Ensure initial map setup message is clear
+    if (!map) {
+        document.getElementById('map-container').innerHTML = `<p class="text-center pt-8 text-gray-500">Map initialization pending. Check Google Maps API Key or if map script failed to load.</p>`;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Registration - GoRide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .form-section { border-left: 3px solid #f97316; } /* Changed to a warmer orange for focus */
+        .file-input-label { 
+            background-color: #f3f4f6; 
+            border: 1px dashed #d1d5db; 
+            transition: all 0.2s ease-in-out;
+        }
+        .file-input-label:hover { background-color: #e5e7eb; }
+        /* Custom style for showing file selected */
+        .file-input-label.file-selected {
+            border-color: #10B981;
+            background-color: #D1FAE5; /* Light green background */
+            color: #065F46; /* Dark green text */
+        }
+        #toast {
+            position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999;
+            transform: translateX(120%); opacity: 0; transition: all 0.5s ease;
+        }
+        #toast.show { transform: translateX(0); opacity: 1; }
+    </style>
+</head>
+<body class="bg-gray-50 py-12 px-4 min-h-screen">
+
+    <div id="toast" class="toast max-w-xs p-4 rounded-lg shadow-lg text-white">Toast message</div>
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl p-6 md:p-10 shadow-2xl">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-2 text-center">Become a GoRide Driver</h1>
+        <p class="text-center text-gray-500 mb-8">We just need a few details and documents to get you started!</p>
+        
+        <form id="driverForm" class="space-y-10">
+            
+            <!-- 1. Personal Information -->
+            <fieldset class="form-section pl-4 space-y-4">
+                <legend class="text-2xl font-bold text-gray-700 pb-2">1. Personal Information</legend>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input type="text" name="fullname" placeholder="Full Name *" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" required>
+                    <input type="email" name="email" placeholder="Email Address *" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" required>
+                    <input type="tel" name="phone" placeholder="Mobile Number *" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" required>
+                    <input type="password" name="password" placeholder="Create Password *" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" required>
+                    
+                    <div>
+                        <label for="dob" class="text-xs text-gray-500 block mb-1">Date of Birth</label>
+                        <input type="date" name="dob" id="dob" class="w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+
+                    <select name="gender" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"><option value="">Select Gender</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
+                    <input type="tel" name="emergency_contact" placeholder="Emergency Contact" class="w-full p-3 border border-gray-300 rounded-lg">
+                    
+                    <!-- FIX: Updated Profile Picture input to match the structure of other file inputs for correct JS handling -->
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📷 Profile Picture *</span><input type="file" name="profile_picture" accept="image/*" required class="hidden"></label>
+                </div>
+                <textarea name="address" placeholder="Full Residential Address" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500" rows="2"></textarea>
+            </fieldset>
+
+            <!-- 2. Driving & Vehicle -->
+            <fieldset class="form-section pl-4 space-y-4">
+                <legend class="text-2xl font-bold text-gray-700 pb-2">2. Driving & Vehicle</legend>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input type="text" name="license_number" placeholder="Driving License Number *" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                    <div>
+                        <label for="license_validity" class="text-xs text-gray-500 block mb-1">License Validity Date</label>
+                        <input type="date" name="license_validity" id="license_validity" class="w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+                    <input type="number" name="driving_experience" placeholder="Driving Experience (Years)" class="w-full p-3 border border-gray-300 rounded-lg">
+                    
+                    <select name="vehicle_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                        <option value="">Select Vehicle Type *</option>
+                        <option value="bike">Bike</option>
+                        <option value="auto">Auto</option>
+                        <option value="car">Car</option>
+                    </select>
+                    
+                    <input type="text" name="vehicle_model" placeholder="Vehicle Model & Make" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <input type="number" name="vehicle_year" placeholder="Vehicle Year (e.g. 2020)" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <input type="text" name="registration_number" placeholder="Vehicle Registration No." class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+            </fieldset>
+
+            <!-- 3. Identity & Vehicle Documents -->
+            <fieldset class="form-section pl-4 space-y-4">
+                 <legend class="text-2xl font-bold text-gray-700 pb-2">3. Identity & Vehicle Documents</legend>
+                 <p class="text-sm text-gray-500">Please upload scans or photos of the required documents.</p>
+                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- File inputs. Note: The 'name' attribute matches the new database schema -->
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Government ID (Aadhar/Voter)</span><input type="file" name="govt_id" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Police Verification / BGC</span><input type="file" name="background_check" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Driving License Scan</span><input type="file" name="license_file" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Vehicle RC</span><input type="file" name="rc_file" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Vehicle Insurance</span><input type="file" name="insurance_file" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Emission Certificate</span><input type="file" name="emission_cert" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Vehicle Permit (if any)</span><input type="file" name="permit" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📷 Vehicle Photo</span><input type="file" name="vehicle_photo" accept="image/*" class="hidden"></label>
+                </div>
+            </fieldset>
+
+            <!-- 4. Bank & Payment Details -->
+            <fieldset class="form-section pl-4 space-y-4">
+                <legend class="text-2xl font-bold text-gray-700 pb-2">4. Bank & Payment Details</legend>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <input type="text" name="pan_number" placeholder="PAN Number" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <input type="text" name="bank_account_number" placeholder="Bank Account Number" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <input type="text" name="bank_ifsc_code" placeholder="Bank IFSC Code" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <input type="text" name="bank_name" placeholder="Bank Name" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <label class="file-input-label p-4 text-center rounded-lg cursor-pointer flex items-center justify-center h-20"><span>📄 Cancelled Cheque</span><input type="file" name="cancelled_cheque" accept=".pdf, .doc, .docx, image/*" class="hidden"></label>
+                </div>
+            </fieldset>
+            
+            <div class="pt-6 border-t">
+                 <div class="flex items-start">
+                    <input id="terms" type="checkbox" required class="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 mt-1">
+                    <label for="terms" class="ml-2 block text-sm text-gray-900">I accept the <a href="#" class="font-medium text-orange-600 hover:underline">Terms & Conditions</a> and consent to background verification.</label>
+                </div>
+                <button type="submit" id="registerBtn" class="w-full mt-6 bg-orange-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200" disabled>Submit Application</button>
+                 <p class="text-center text-sm text-gray-600 mt-4">Already registered? <a href="/login" class="font-medium text-orange-600 hover:underline">Log In</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('driverForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const termsCheckbox = document.getElementById('terms');
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = message;
+            const color = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            toast.className = `toast max-w-xs p-4 rounded-lg shadow-lg text-white ${color} show`;
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // Enable button only when terms are accepted
+        termsCheckbox.addEventListener('change', () => {
+            registerBtn.disabled = !termsCheckbox.checked;
+        });
+
+        // Event listeners for file inputs for visual feedback
+        form.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', () => {
+                const label = input.parentElement;
+                const fileName = input.files[0]?.name;
+                const originalLabelText = label.querySelector('span')?.textContent?.replace(/✅ .*/, '')?.trim();
+
+                if (fileName && label && label.querySelector('span')) {
+                    // Show file selected status
+                    label.querySelector('span').textContent = `✅ ${fileName.substring(0, 20)}...`;
+                    label.classList.add('file-selected');
+                } else if (label && label.querySelector('span')) {
+                    // Revert to original text if file is cleared
+                    label.querySelector('span').textContent = originalLabelText;
+                    label.classList.remove('file-selected');
+                }
+            });
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Submitting...';
+
+            const formData = new FormData(form);
+            
+            // Fix for license file name change in backend
+            const licenseFile = formData.get('license_file');
+            if (licenseFile) {
+                // If the file exists under license_file (new name), remove the old one just in case
+                formData.delete('license');
+            }
+
+
+            try {
+                // Use the correct API route
+                const res = await fetch('/api/driver/register', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await res.json();
+                    if (res.ok) {
+                        showToast('Application submitted! We will review it shortly.', 'success');
+                        form.reset();
+                        // Also clear the custom file input labels' visual state
+                        form.querySelectorAll('.file-input-label.file-selected').forEach(el => {
+                            el.classList.remove('file-selected');
+                            // Reset text to original (requires a more complex state management, keeping it simple here)
+                            // A proper reset of the inner span text is more involved, we rely on the form.reset() clearing the file input.
+                        });
+                        // Redirect driver to login after successful submission
+                        setTimeout(() => window.location.href = 'driverlogin.html', 2000); // Changed from '/login' to 'driverlogin.html'
+                    } else {
+                        showToast(data.message || 'Registration failed due to a server error.', 'error');
+                    }
+                } else {
+                    const text = await res.text();
+                    console.error('Server returned a non-JSON response:', text);
+                    showToast('An unexpected server error occurred. (Error ' + res.status + ')', 'error');
+                }
+            } catch (err) {
+                console.error('Error submitting form:', err);
+                showToast('An error occurred. Please try again.', 'error');
+            } finally {
+                registerBtn.disabled = !termsCheckbox.checked; // Re-check terms for enabling
+                registerBtn.textContent = 'Submit Application';
+            }
+        });
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Login - GoRide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    /* Custom styles for a better user experience */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-backdrop.visible {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-content {
+      transform: scale(0.9);
+      opacity: 0;
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+    .modal-backdrop.visible .modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    /* Custom message box for alerts and notifications */
+    #messageBox {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      color: white;
+      z-index: 2000;
+      font-weight: 500;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    #messageBox.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #messageBox.bg-success { background-color: #28a745; }
+    #messageBox.bg-error { background-color: #dc3545; }
+    #messageBox.bg-info { background-color: #17a2b8; }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <main class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg">
+      <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Driver Login</h1>
+      <p class="text-center text-gray-600 mb-6">Access your driver dashboard</p>
+
+      <form id="driverLoginForm" class="space-y-6">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input type="email" id="email" required placeholder="Your Email"
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500 transition">
+        </div>
+        <div class="relative">
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <input type="password" id="password" required
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500 pr-12 transition">
+          <button type="button" id="togglePasswordBtn" class="absolute right-3 top-10 text-gray-500 hover:text-amber-600">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <button type="submit" class="w-full bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600 transition">
+          Sign In
+        </button>
+        <div class="text-center">
+          <a href="#" id="forgotPasswordLink" class="text-sm text-amber-600 hover:text-amber-800 font-medium">Forgot Password?</a>
+        </div>
+        <p class="text-center text-gray-600">
+          Don't have an account?
+          <a href="driver.html" class="text-amber-600 hover:text-amber-800 font-semibold">Register</a>
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal-backdrop">
+    <div class="modal-content relative mx-auto p-6 border w-full max-w-md shadow-lg rounded-xl bg-white">
+      <div class="text-center">
+        <h3 class="text-2xl font-semibold text-gray-900 mb-4">Reset Driver Password</h3>
+        <!-- Step 1: Enter Mobile -->
+        <div id="step1Mobile">
+          <p class="text-sm text-gray-500 mb-4">Enter the mobile number associated with your driver account.</p>
+          <input type="tel" id="resetMobile" placeholder="10-digit mobile number" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-amber-500">
+          <button id="sendResetOtpBtn" class="w-full mt-4 bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600">Send OTP</button>
+        </div>
+        <!-- Step 2: Verify OTP -->
+        <div id="step2Otp" class="hidden">
+          <p class="text-sm text-gray-500 mb-4">An OTP has been sent. Please enter it below.</p>
+          <input type="text" id="resetOtp" placeholder="6-digit OTP" class="w-full px-4 py-3 rounded-lg border border-gray-300 text-center tracking-[0.5em]">
+          <button id="verifyResetOtpBtn" class="w-full mt-4 bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600">Verify OTP</button>
+        </div>
+        <!-- Step 3: New Password -->
+        <div id="step3Password" class="hidden">
+          <p class="text-sm text-gray-500 mb-4">Enter your new password.</p>
+          <input type="password" id="newPassword" placeholder="New Password" class="w-full px-4 py-3 rounded-lg border border-gray-300">
+          <input type="password" id="confirmNewPassword" placeholder="Confirm New Password" class="w-full mt-2 px-4 py-3 rounded-lg border border-gray-300">
+          <button id="updatePasswordBtn" class="w-full mt-4 bg-amber-500 text-white py-3 rounded-lg font-semibold hover:bg-amber-600">Reset Password</button>
+        </div>
+        <p id="resetStatus" class="text-sm mt-4" aria-live="polite"></p>
+      </div>
+      <div class="text-center mt-4">
+        <button id="closeModal" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Box for notifications -->
+  <div id="messageBox"></div>
+
+  <!-- reCAPTCHA container for Firebase -->
+  <div id="recaptcha-container"></div>
+
+  <script type="module">
+    // Import Firebase modules from the latest version
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    
+    // *** CRITICAL FIX: Define the absolute base URL for the API server ***
+    const API_BASE_URL = "https://goriders.in"; 
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDToUH_p-c21Ci0Tib3U863MdHTaqCcOsU",
+      authDomain: "hitaishi-health-care-app.firebaseapp.com",
+      databaseURL: "https://hitaishi-health-care-app-default-rtdb.firebaseio.com",
+      projectId: "hitaishi-health-care-app",
+      storageBucket: "hitaishi-health-care-app.firebasestorage.app",
+      messagingSenderId: "652006467508",
+      appId: "1:652006467508:web:1d5578b9faad68534cf4e1",
+      measurementId: "G-C40SHDN46Y"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    let confirmationResult; // To store phone auth confirmation
+
+    // --- UI Elements ---
+    const elements = {
+      loginForm: document.getElementById('driverLoginForm'),
+      emailInput: document.getElementById('email'),
+      passwordInput: document.getElementById('password'),
+      togglePasswordBtn: document.getElementById('togglePasswordBtn'),
+      forgotPasswordModal: document.getElementById('forgotPasswordModal'),
+      forgotPasswordLink: document.getElementById('forgotPasswordLink'),
+      closeModalBtn: document.getElementById('closeModal'),
+      sendResetOtpBtn: document.getElementById('sendResetOtpBtn'),
+      verifyResetOtpBtn: document.getElementById('verifyResetOtpBtn'),
+      updatePasswordBtn: document.getElementById('updatePasswordBtn'),
+      resetMobileInput: document.getElementById('resetMobile'),
+      resetOtpInput: document.getElementById('resetOtp'),
+      newPasswordInput: document.getElementById('newPassword'),
+      confirmNewPasswordInput: document.getElementById('confirmNewPassword'),
+      resetStatus: document.getElementById('resetStatus'),
+      step1: document.getElementById('step1Mobile'),
+      step2: document.getElementById('step2Otp'),
+      step3: document.getElementById('step3Password'),
+      messageBox: document.getElementById('messageBox'),
+    };
+
+    // --- Utility Functions ---
+    function normalizeIN(input) {
+      const digits = String(input || '').replace(/\D/g, '');
+      const ten = digits.slice(-10);
+      return { ten, e164: '+91' + ten };
+    }
+
+    function showMessage(message, type = 'info') {
+      elements.messageBox.textContent = message;
+      elements.messageBox.className = `show bg-${type}`;
+      setTimeout(() => {
+        elements.messageBox.className = '';
+      }, 4000);
+    }
+
+    function setResetStatus(text, colorClass) {
+      elements.resetStatus.textContent = text;
+      elements.resetStatus.className = `text-sm mt-4 ${colorClass}`;
+    }
+
+    // --- Authentication Logic ---
+    function setupRecaptcha() {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+          'size': 'invisible',
+          'callback': () => console.log("reCAPTCHA solved"),
+          'expired-callback': () => showMessage('reCAPTCHA expired. Please try again.', 'error')
+        });
+      }
+    }
+
+    elements.loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = elements.emailInput.value.trim();
+      const password = elements.passwordInput.value;
+
+      if (!email || !password) {
+        return showMessage("Email and password are required.", "error");
+      }
+
+      try {
+        // *** CRITICAL FIX: Use API_BASE_URL for absolute path ***
+        const res = await fetch(`${API_BASE_URL}/api/driver/login`, { 
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        
+        // Check if response status is OK (200-299)
+        if (!res.ok) {
+            const errorText = await res.text();
+            let errorData;
+            try {
+                errorData = JSON.parse(errorText);
+            } catch {
+                console.error("Login Error: Server returned non-JSON error.", errorText);
+                showMessage('Login failed due to a server error. Status: ' + res.status, "error");
+                return;
+            }
+            showMessage(errorData.message || 'Login failed', "error");
+            return;
+        }
+
+        const data = await res.json();
+                
+        if (data.success) {
+          showMessage("Login successful! Redirecting...", "success");
+
+          // CRITICAL: Ensure token and ID are saved before redirecting
+          localStorage.setItem('driverId', data.driverId);
+          if (data.token) {
+            localStorage.setItem('driverToken', data.token);
+          }
+          
+          window.location.href = "driverdashboard.html";
+
+        } else {
+          showMessage(data.message || 'Login failed', "error");
+        }
+      } catch (err) {
+        console.error("Login Error:", err);
+        showMessage("A network error occurred or server is unreachable.", "error");
+      }
+    });
+
+    // --- Forgot Password Modal Logic ---
+    function showModal() {
+      resetModalState();
+      setupRecaptcha();
+      elements.forgotPasswordModal.classList.add('visible');
+    }
+
+    function hideModal() {
+      elements.forgotPasswordModal.classList.remove('visible');
+    }
+
+    function resetModalState() {
+      elements.step1.style.display = 'block';
+      elements.step2.style.display = 'none';
+      elements.step3.style.display = 'none';
+      elements.resetMobileInput.value = '';
+      elements.resetOtpInput.value = '';
+      elements.newPasswordInput.value = '';
+      elements.confirmNewPasswordInput.value = '';
+      setResetStatus('', 'text-gray-500');
+    }
+
+    elements.forgotPasswordLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showModal();
+    });
+
+    elements.closeModalBtn.addEventListener('click', hideModal);
+
+    elements.forgotPasswordModal.addEventListener('click', (e) => {
+      if (e.target === elements.forgotPasswordModal) {
+        hideModal();
+      }
+    });
+
+    elements.sendResetOtpBtn.addEventListener('click', async () => {
+      const { ten, e164 } = normalizeIN(elements.resetMobileInput.value);
+      if (ten.length !== 10) return showMessage('Enter a valid 10-digit mobile number', 'error');
+
+      setResetStatus('Checking mobile number...', 'text-blue-500');
+
+      // 1) Check with backend if driver exists
+      // *** CRITICAL FIX: Use API_BASE_URL for absolute path ***
+      const existsRes = await fetch(`${API_BASE_URL}/api/driver/get-driver-by-mobile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile: ten })
+      });
+
+      if (!existsRes.ok) {
+        const errData = await existsRes.json();
+        setResetStatus(errData.message || 'Mobile not registered.', 'text-red-500');
+        return;
+      }
+
+      // 2) Send OTP via Firebase if driver exists
+      try {
+        const appVerifier = window.recaptchaVerifier;
+        confirmationResult = await signInWithPhoneNumber(auth, e164, appVerifier);
+        setResetStatus('OTP sent successfully!', 'text-green-500');
+        elements.step1.style.display = 'none';
+        elements.step2.style.display = 'block';
+      } catch (err) {
+        console.error("Firebase OTP Error:", err);
+        setResetStatus('Failed to send OTP. Please try again.', 'text-red-500');
+        // Reset reCAPTCHA if it fails
+        if (window.grecaptcha && window.recaptchaVerifier) {
+          window.recaptchaVerifier.render().then(id => grecaptcha.reset(id));
+        }
+      }
+    });
+
+    elements.verifyResetOtpBtn.addEventListener('click', async () => {
+      const otp = elements.resetOtpInput.value;
+      if (!otp || otp.length !== 6) {
+        return showMessage('Please enter the 6-digit OTP.', 'error');
+      }
+
+      setResetStatus('Verifying OTP...', 'text-blue-500');
+      try {
+        await confirmationResult.confirm(otp);
+        setResetStatus('OTP Verified!', 'text-green-500');
+        elements.step2.style.display = 'none';
+        elements.step3.style.display = 'block';
+      } catch (error) {
+        console.error("OTP Verify Error:", error);
+        setResetStatus('Invalid OTP. Please try again.', 'text-red-500');
+      }
+    });
+
+    elements.updatePasswordBtn.addEventListener('click', async () => {
+      const { ten } = normalizeIN(elements.resetMobileInput.value);
+      const newPassword = elements.newPasswordInput.value;
+      const confirmPassword = elements.confirmNewPasswordInput.value;
+      if (newPassword.length < 6) return showMessage('Password must be at least 6 characters.', 'error');
+      if (newPassword !== confirmPassword) return showMessage('Passwords do not match.', 'error');
+
+      // *** CRITICAL FIX: Use API_BASE_URL for absolute path ***
+      const res = await fetch(`${API_BASE_URL}/api/driver/reset-password-mobile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile: ten, newPassword })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setResetStatus('Password updated successfully!', 'text-green-500');
+        showMessage('Password updated! You can now log in.', 'success');
+        // End the temporary Firebase session used for OTP verification
+        if (auth.currentUser) {
+            await signOut(auth);
+        }
+        setTimeout(hideModal, 2000);
+      } else {
+        setResetStatus(data.message || 'Failed to update password', 'text-red-500');
+      }
+    });
+
+    // --- Event Listeners ---
+    elements.togglePasswordBtn.addEventListener('click', () => {
+      const isPassword = elements.passwordInput.type === 'password';
+      elements.passwordInput.type = isPassword ? 'text' : 'password';
+      elements.togglePasswordBtn.querySelector('i').classList.toggle('fa-eye');
+      elements.togglePasswordBtn.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+  </script>
+</body>
+</html>

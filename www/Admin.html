@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Status Badge Styling */
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .status-pending { background-color: #fef9c3; color: #b45309; } /* Amber */
+        .status-approved { background-color: #dcfce7; color: #15803d; } /* Green */
+        .status-rejected { background-color: #fee2e2; color: #b91c1c; } /* Red */
+        
+        /* Sidebar and Toast */
+        .sidebar-btn.active { background-color: #4f46e5; color: #ffffff; font-weight: 600; }
+        .toast {
+            position: fixed; top: 1.5rem; right: 1.5rem; z-index: 9999;
+            transform: translateX(120%); opacity: 0; transition: all 0.5s ease;
+        }
+        .toast.show { transform: translateX(0); opacity: 1; }
+
+        /* Custom Modal (replacing window.confirm()) */
+        .modal-backdrop { z-index: 1000; background-color: rgba(0, 0, 0, 0.6); }
+        .modal-content { z-index: 1001; }
+        
+        #map-display-container { height: 400px; width: 100%; border-radius: 8px; margin-top: 10px; }
+    </style>
+    <!-- Load Google Maps API Script -->
+    <script>
+        // CRITICAL: Replace YOUR_GOOGLE_MAPS_API_KEY with the actual key from your .env file
+        const GOOGLE_MAPS_API_KEY = 'AIza..DqW6tsp_sUG5-Xf6aXFzYuqrvRiGehGXg'; 
+
+        if (GOOGLE_MAPS_API_KEY && GOOGLE_MAPS_API_KEY !== 'YOUR_GOOGLE_MAPS_API_KEY') {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMapPlaceholder&v=weekly`;
+            script.async = true;
+            document.head.appendChild(script);
+        } else {
+            console.error("Google Maps API Key missing. Map functionality disabled.");
+        }
+        // Placeholder function to satisfy the Google Maps script callback requirement
+        function initMapPlaceholder() { /* Maps will be initialized inside the modal functions */ }
+    </script>
+</head>
+<body class="antialiased text-gray-800">
+
+    <div id="toast" class="toast max-w-xs p-4 rounded-xl shadow-xl text-white">Toast message</div>
+
+    <!-- Confirmation Modal (for Reject - Replacing confirm()) -->
+    <div id="confirm-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4">
+        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl w-full max-w-sm transform transition-all">
+            <h3 class="text-xl font-bold mb-4 text-red-700 border-b pb-2">Confirm Rejection</h3>
+            <p class="mb-6 text-gray-600">
+                Are you sure you want to reject this driver? 
+                This action is **irreversible**. The driver's status will be set to 'Rejected' and **all uploaded documents will be permanently deleted** from the server.
+            </p>
+            <div class="flex justify-end space-x-4">
+                <button onclick="hideConfirmModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button id="reject-confirm-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold shadow-md">Reject & Delete Files</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Location Modal (New: For Map View) -->
+    <div id="location-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4">
+        <div class="modal-content bg-white p-6 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all">
+            <h3 class="text-xl font-bold mb-4 text-indigo-700 border-b pb-2" id="location-modal-title">Driver's Last Known Location</h3>
+            <div class="mb-4 text-gray-700">
+                <p><strong>Status:</strong> <span id="driver-map-status"></span></p>
+                <p><strong>Address:</strong> <span id="driver-map-address" class="font-semibold"></span></p>
+            </div>
+            <div id="map-display-container">Map loading...</div>
+            <div class="flex justify-end mt-6">
+                <button onclick="hideLocationModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-800 text-gray-200 flex flex-col shadow-xl">
+            <div class="p-4 border-b border-gray-700"><h1 class="text-2xl font-extrabold text-white">GoRide Admin</h1></div>
+            <nav class="flex-1 p-4 space-y-2">
+                <button id="show-drivers-btn" class="sidebar-btn active w-full text-left px-4 py-3 rounded-xl hover:bg-gray-700 transition-colors flex items-center space-x-2">
+                    <span>&#x1F695;</span><span>Drivers</span>
+                </button>
+                <button id="show-users-btn" class="sidebar-btn w-full text-left px-4 py-3 rounded-xl hover:bg-gray-700 transition-colors flex items-center space-x-2">
+                    <span>&#x1F464;</span><span>Riders</span>
+                </button>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+                <a href="/login" class="sidebar-btn block w-full text-left px-4 py-3 rounded-xl bg-gray-700 text-red-300 hover:bg-gray-600 transition-colors text-center font-semibold">Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+            <!-- Riders Section (Hidden by Default) -->
+            <section id="users-section" class="hidden">
+                 <h1 class="text-3xl font-bold text-gray-900 mb-6">Rider Management</h1>
+                 <div class="bg-white shadow-xl rounded-xl overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50"><tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Rider ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Full Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Email</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Mobile</th>
+                        </tr></thead>
+                        <tbody id="users-table-body" class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Drivers Section (Active by Default) -->
+            <section id="drivers-section">
+                <h1 class="text-3xl font-bold text-gray-900 mb-6">Driver Verification Queue</h1>
+                <div class="bg-white shadow-xl rounded-xl overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50"><tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Driver Info</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Contact</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Vehicle</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                        </tr></thead>
+                        <tbody id="drivers-table-body" class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dynamic API Base URL (works for localhost:5000 and https://goriders.in)
+        const API_BASE_URL = window.location.origin.includes('localhost') ? `http://localhost:5000` : window.location.origin;
+
+        const driversTableBody = document.getElementById('drivers-table-body');
+        const showUsersBtn = document.getElementById('show-users-btn');
+        const showDriversBtn = document.getElementById('show-drivers-btn');
+        const driversSection = document.getElementById('drivers-section');
+        const usersSection = document.getElementById('users-section');
+        
+        const confirmModal = document.getElementById('confirm-modal');
+        const rejectConfirmBtn = document.getElementById('reject-confirm-btn');
+        let pendingRejectDriverId = null;
+
+        const locationModal = document.getElementById('location-modal');
+        let currentMap = null;
+        let currentMarker = null;
+
+        // --- Modal Functions (Replacing window.confirm()) ---
+        window.showConfirmModal = function(driverId) {
+            pendingRejectDriverId = driverId;
+            confirmModal.classList.remove('hidden');
+            confirmModal.classList.add('flex');
+        }
+
+        window.hideConfirmModal = function() {
+            pendingRejectDriverId = null;
+            confirmModal.classList.add('hidden');
+            confirmModal.classList.remove('flex');
+        }
+        
+        window.hideLocationModal = function() {
+            locationModal.classList.add('hidden');
+            locationModal.classList.remove('flex');
+            // Clear map container to reset
+            document.getElementById('map-display-container').innerHTML = 'Map loading...';
+            currentMap = null;
+            currentMarker = null;
+        }
+
+
+        rejectConfirmBtn.addEventListener('click', () => {
+            if (pendingRejectDriverId) {
+                // Call the actual reject function
+                window.rejectDriver(pendingRejectDriverId);
+                hideConfirmModal();
+            }
+        });
+
+
+        // --- WebSocket Connection ---
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        // Connect to the same host, using the /api/ride/ws path
+        const ws = new WebSocket(`${wsProtocol}//${window.location.host}/api/ride/ws`);
+
+        ws.onopen = () => {
+            console.log('Admin WebSocket connected');
+            // CRITICAL: Identify this client as an admin for targeted alerts (Handled in routes/ride.js)
+            ws.send(JSON.stringify({ type: 'IDENTIFY', payload: { role: 'admin' } }));
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === 'NEW_DRIVER_APPLICATION') {
+                // Admin gets a live alert
+                showToast(`🚨 New PENDING application: ${message.payload.fullname}`, 'info');
+                // Re-fetch to update the table with the new pending driver at the top
+                fetchDrivers(); 
+            }
+        };
+
+        ws.onclose = () => {
+             // showToast('Live connection lost. Please refresh.', 'error');
+        };
+        
+        // --- Toast Notifications ---
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = message;
+            const color = type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+            toast.className = `toast max-w-xs p-4 rounded-xl shadow-xl text-white ${color} show`;
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // --- Tab Switching Logic ---
+        function setActiveTab(activeBtn) {
+            document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.remove('active'));
+            activeBtn.classList.add('active');
+        }
+
+        showUsersBtn.addEventListener('click', () => {
+            usersSection.classList.remove('hidden');
+            driversSection.classList.add('hidden');
+            setActiveTab(showUsersBtn);
+            // fetchUsers(); // Assuming rider data fetching is handled here
+        });
+
+        showDriversBtn.addEventListener('click', () => {
+            driversSection.classList.remove('hidden');
+            usersSection.classList.add('hidden');
+            setActiveTab(showDriversBtn);
+            fetchDrivers();
+        });
+
+        // --- Data Fetching and Rendering ---
+        async function fetchDrivers() {
+            try {
+                // The backend query ensures drivers are sorted by Pending first
+                const res = await fetch(`${API_BASE_URL}/api/driver/all`);
+                const drivers = await res.json();
+                driversTableBody.innerHTML = '';
+                drivers.forEach(driver => addDriverRow(driver));
+            } catch (error) {
+                console.error('Failed to fetch drivers:', error);
+                driversTableBody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-red-500">Failed to load drivers. Check your server connection.</td></tr>`;
+            }
+        }
+        
+        function addDriverRow(driver) {
+            const row = document.createElement('tr');
+            // driver.driver_id is the INT primary key for the action functions
+            row.id = `driver-row-${driver.driver_id}`; 
+            if(driver.verification_status === 'pending') row.classList.add('bg-orange-50'); 
+            row.classList.add('hover:bg-gray-50');
+
+            const statusClass = `status-${driver.verification_status}`;
+            
+            // Buttons and View Map logic
+            let actionButtons = '';
+            if (driver.verification_status === 'pending') {
+                 actionButtons = `
+                    <button onclick="approveDriver('${driver.driver_id}')" class="text-green-500 hover:text-green-700 text-2xl p-1" title="Approve">&#x2705;</button>
+                    <button onclick="showConfirmModal('${driver.driver_id}')" class="text-red-500 hover:text-red-700 text-2xl p-1 ml-2" title="Reject">&#x274C;</button>
+                `;
+            } else {
+                 actionButtons = `
+                    <button onclick="viewDriverLocation('${driver.uuid}', '${driver.fullname}')" class="text-blue-500 hover:text-blue-700 p-1" title="View Location">
+                        <svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
+                `;
+            }
+
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">${driver.fullname}</div>
+                    <div class="text-xs text-gray-500">ID: ${driver.uuid}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${driver.email}<br>${driver.phone}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${driver.vehicle_type || 'N/A'}<br>${driver.registration_number || 'N/A'}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span id="status-${driver.driver_id}" class="status-badge ${statusClass}">${driver.verification_status.charAt(0).toUpperCase() + driver.verification_status.slice(1)}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium action-buttons">${actionButtons}</td>
+            `;
+            
+            driversTableBody.appendChild(row);
+        }
+        
+        // --- Admin Actions ---
+        window.approveDriver = async function(driverId) {
+            try {
+                // Ensure driverId is sent as an integer
+                const res = await fetch(`${API_BASE_URL}/api/driver/update-status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ driverId: parseInt(driverId), status: 'approved' }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Failed to approve');
+                
+                updateRowStatus(driverId, 'approved');
+                showToast('Driver approved! Confirmation email sent.', 'success');
+            } catch (error) {
+                console.error('Error approving driver:', error);
+                showToast(`Error approving driver: ${error.message}`, 'error');
+            }
+        };
+
+        window.rejectDriver = async function(driverId) {
+            try {
+                // Calls the POST endpoint which handles file deletion and status update
+                const res = await fetch(`${API_BASE_URL}/api/driver/reject`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ driverId: parseInt(driverId) }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Failed to reject');
+                
+                updateRowStatus(driverId, 'rejected');
+                showToast('Driver rejected. Files deleted and status updated.', 'success');
+            } catch (error) {
+                console.error('Error rejecting driver:', error);
+                showToast(`Error rejecting driver: ${error.message}`, 'error');
+            }
+        };
+        
+        window.viewDriverLocation = async function(uuid, fullname) {
+            locationModal.classList.remove('hidden');
+            locationModal.classList.add('flex');
+            document.getElementById('location-modal-title').textContent = `${fullname}'s Live Location`;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/driver/location/${uuid}`);
+                const data = await res.json();
+                
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || 'Location data not found.');
+                }
+                
+                const loc = data.location;
+                const pos = { lat: parseFloat(loc.latitude), lng: parseFloat(loc.longitude) };
+
+                document.getElementById('driver-map-status').textContent = loc.is_online ? 'Online' : 'Offline';
+                document.getElementById('driver-map-status').style.color = loc.is_online ? '#10B981' : '#B91C1C';
+                document.getElementById('driver-map-address').textContent = loc.address || 'Coordinates only.';
+                
+                // Initialize the map inside the modal
+                currentMap = new google.maps.Map(document.getElementById("map-display-container"), {
+                    center: pos,
+                    zoom: 16,
+                });
+                
+                currentMarker = new google.maps.Marker({
+                    position: pos,
+                    map: currentMap,
+                    title: fullname,
+                    icon: {
+                        url: loc.is_online ? "http://maps.google.com/mapfiles/ms/icons/green-dot.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error fetching driver location:', error);
+                document.getElementById('driver-map-status').textContent = 'Error';
+                document.getElementById('driver-map-status').style.color = '#B91C1C';
+                document.getElementById('driver-map-address').textContent = error.message;
+                document.getElementById('map-display-container').innerHTML = `<p class="text-center p-4 text-red-500">Failed to load map: ${error.message}</p>`;
+            }
+        }
+
+
+        function updateRowStatus(driverId, newStatus) {
+            const row = document.getElementById(`driver-row-${driverId}`);
+            if (!row) return;
+            
+            // Update status badge
+            const statusSpan = row.querySelector('.status-badge');
+            const newStatusDisplay = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            
+            statusSpan.className = `status-badge status-${newStatus}`;
+            statusSpan.textContent = newStatusDisplay;
+
+            // Update action buttons 
+            if (newStatus === 'approved') {
+                 // Fetch the UUID from the row to ensure the map button works
+                 const uuid = row.querySelector('.text-xs.text-gray-500').textContent.replace('ID: ', '');
+                 row.querySelector('.action-buttons').innerHTML = `
+                    <button onclick="viewDriverLocation('${uuid}', '${row.querySelector('.text-sm.font-medium').textContent}')" class="text-blue-500 hover:text-blue-700 p-1" title="View Location">
+                        <svg class="w-6 h-6 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>`;
+            } else {
+                 row.querySelector('.action-buttons').innerHTML = `<span class="text-sm text-gray-400">Handled</span>`;
+            }
+
+            row.classList.remove('bg-orange-50'); // Remove pending highlight
+        }
+
+        // --- Initial Load ---
+        setActiveTab(showDriversBtn);
+        fetchDrivers();
+    });
+    </script>
+</body>
+</html>

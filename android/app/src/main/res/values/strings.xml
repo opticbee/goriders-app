@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">goriders</string>
+    <string name="title_activity_main">goriders</string>
+    <string name="package_name">com.goriders.app</string>
+    <string name="custom_url_scheme">com.goriders.app</string>
+</resources>

@@ -1,0 +1,7 @@
+npm install twilio
+// for twilio installation which can send otp to mobile number 
+
+
+npm install express multer mysql2 bcryptjs jsonwebtoken
+
+// for installing mysql2
